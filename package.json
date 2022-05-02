@@ -1,0 +1,33 @@
+{
+  "name": "react-context-slices",
+  "version": "1.0.5",
+  "description": "work with context in a redux way",
+  "main": "dist/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "rm -rf dist && NODE_ENV=production babel src --out-dir dist --copy-files"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/roggc/react-context-slices.git"
+  },
+  "keywords": [
+    "react",
+    "context",
+    "redux",
+    "slice"
+  ],
+  "author": "roggc",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/roggc/react-context-slices/issues"
+  },
+  "homepage": "https://github.com/roggc/react-context-slices#readme",
+  "dependencies": {
+    "@babel/cli": "^7.17.10",
+    "@babel/core": "^7.17.10",
+    "@babel/preset-react": "^7.16.7",
+    "react": "^18.1.0",
+    "use-immer": "^0.7.0"
+  }
+}
