@@ -1,6 +1,6 @@
 {
   "name": "react-context-slices",
-  "version": "1.0.7",
+  "version": "2.0.0",
   "description": "work with context in a redux way",
   "main": "dist/index.js",
   "scripts": {

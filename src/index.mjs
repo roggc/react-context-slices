@@ -1,24 +1,7 @@
-import React,{ createContext, useContext } from "react";
+import React, { createContext, useContext } from "react";
 import { useImmerReducer } from "use-immer";
 
-export const _useStateContexts = [];
-export const __useActions = [];
-const _providers = [];
-const useSuperStateContext = (slice, ...args) => {
-  const useSuperCallback = (result, useStateContext) => ({
-    ...result,
-    ...(useStateContext(slice) || {}),
-  });
-  return args.reduce(useSuperCallback, {});
-};
-
-const useSuperActions = (...args) => {
-  const useSuperCallback = (result, useActions) => ({
-    ...result,
-    ...useActions(),
-  });
-  return args.reduce(useSuperCallback, {});
-};
+const providers = [];
 
 export const createSlice = (reducer, initialState, name, _useActions) => {
   const stateContext = createContext();
@@ -39,23 +22,23 @@ export const createSlice = (reducer, initialState, name, _useActions) => {
     );
   };
 
-  _useStateContexts.push(useStateContext);
-  __useActions.push(_useActions(useDispatchContext));
-  _providers.push(ContextProvider);
-  return ContextProvider;
-};
+  const useValues = (slice) => {
+    const state = useStateContext(slice);
+    return state || {};
+  };
 
-export const useValues = (slice) => {
-  return useSuperStateContext(slice, ..._useStateContexts);
-};
+  providers.push(ContextProvider);
 
-export const useActions = () => {
-  return useSuperActions(...__useActions);
+  return {
+    useValues,
+    useActions: _useActions(useDispatchContext),
+    Provider: ContextProvider,
+  };
 };
 
 export const composeProviders = () => {
   const NeutralProvider = ({ children }) => children;
-  return _providers.reduce(
+  return providers.reduce(
     (AccProvider, Provider) =>
       ({ children }) =>
         (
