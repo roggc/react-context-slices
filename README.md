@@ -94,14 +94,15 @@ export const useActions = () => ({
   ...useCounterActions(),
 });
 
+export { slice as counter } from "./counter";
+export { slice as todos } from "./todos";
 export default composeProviders();
 ```
 
 The `Counter` component would be like:
 
 ```javascript
-import { useValues, useActions } from "../slices";
-import { slice as counter } from "../slices/counter";
+import { useValues, useActions,counter } from "../slices";
 
 const Counter = () => {
   const {
@@ -124,8 +125,7 @@ export default Counter;
 And the `Todos` component would be like:
 
 ```javascript
-import { useValues } from "../slices";
-import { slice as todos_ } from "../slices/todos";
+import { useValues,todos as todos_ } from "../slices";
 
 const Todos = () => {
   const {
