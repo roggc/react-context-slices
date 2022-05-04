@@ -85,6 +85,9 @@ import {
   useActions as useCounterActions,
 } from "./counter";
 
+export { slice as counter } from "./counter";
+export { slice as todos } from "./todos";
+
 export const useValues = (slice) => ({
   ...useTodosValues(slice),
   ...useCounterValues(slice),
@@ -94,8 +97,6 @@ export const useActions = () => ({
   ...useCounterActions(),
 });
 
-export { slice as counter } from "./counter";
-export { slice as todos } from "./todos";
 export default composeProviders();
 ```
 
