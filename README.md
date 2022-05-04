@@ -102,7 +102,7 @@ export default composeProviders();
 The `Counter` component would be like:
 
 ```javascript
-import { useValues, useActions,counter } from "../slices";
+import { useValues, useActions, counter } from "../slices";
 
 const Counter = () => {
   const {
@@ -125,7 +125,7 @@ export default Counter;
 And the `Todos` component would be like:
 
 ```javascript
-import { useValues,todos as todos_ } from "../slices";
+import { useValues, todos as todos_ } from "../slices";
 
 const Todos = () => {
   const {
