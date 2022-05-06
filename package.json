@@ -1,6 +1,6 @@
 {
   "name": "react-context-slices",
-  "version": "2.0.0",
+  "version": "2.0.5",
   "description": "work with react context in an optimal way",
   "main": "dist/index.js",
   "scripts": {
@@ -24,10 +24,16 @@
   },
   "homepage": "https://github.com/roggc/react-context-slices#readme",
   "dependencies": {
+    "use-immer": "^0.7.0"
+  },
+  "devDependencies": {
     "@babel/cli": "^7.17.10",
     "@babel/core": "^7.17.10",
+    "@babel/preset-env": "^7.17.10",
     "@babel/preset-react": "^7.16.7",
-    "react": "^18.1.0",
-    "use-immer": "^0.7.0"
+    "react": "^17.0.2"
+  },
+  "peerDependencies": {
+    "react": "^17.0.2"
   }
 }
