@@ -3,7 +3,7 @@ import { useImmerReducer } from "use-immer";
 
 const providers = [];
 
-export const createSlice = (reducer, initialState, name, _useActions) => {
+export const createSlice = (reducer, initialState, name, getUseActions) => {
   const stateContext = createContext();
   const dispatchContext = createContext();
 
@@ -31,7 +31,7 @@ export const createSlice = (reducer, initialState, name, _useActions) => {
 
   return {
     useValues,
-    useActions: _useActions(useDispatchContext),
+    useActions: getUseActions(useDispatchContext),
     Provider: ContextProvider,
   };
 };
