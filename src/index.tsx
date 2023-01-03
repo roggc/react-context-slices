@@ -1,22 +1,9 @@
+/// <reference path = "./index.d.ts" />
+import * as rcs from "react-context-slices";
 import * as React from "react";
 import { useImmerReducer, ImmerReducer } from "use-immer";
-import { Immutable, Draft } from "immer";
 
-export type ContextProviderType = ({
-  children,
-}: React.PropsWithChildren) => JSX.Element;
-const providers: ContextProviderType[] = [];
-
-export type UseActionsResult = {
-  [x: string]: {
-    [y: string]: (...args: unknown[]) => void;
-  };
-};
-
-export type GenericAction = { type: string; payload?: unknown };
-export type GenericDraft<S> = Draft<Immutable<S>>;
-export type UseDispatch = () => React.Dispatch<GenericAction>;
-export type EmptyObject = {};
+const providers: rcs.ContextProviderType[] = [];
 
 export const createSlice = <S, A>(
   reducer: ImmerReducer<S, A>,
@@ -24,19 +11,19 @@ export const createSlice = <S, A>(
   name: string,
   getUseActions: (
     useDispatch: () => React.Dispatch<A>
-  ) => () => UseActionsResult,
+  ) => () => rcs.UseActionsResult,
   localStorageKeys: string[] = []
 ) => {
-  const StateContext = React.createContext<S | EmptyObject>({});
+  const StateContext = React.createContext<S | rcs.EmptyObject>({});
   const DispatchContext = React.createContext<React.Dispatch<A>>(() => {});
 
   const useStateContext = (slice: string) =>
     React.useContext(
-      slice === name ? StateContext : ({} as React.Context<S | EmptyObject>)
+      slice === name ? StateContext : ({} as React.Context<S | rcs.EmptyObject>)
     );
   const useDispatchContext = () => React.useContext(DispatchContext);
 
-  const useValues = (slice: string): S | EmptyObject => {
+  const useValues = (slice: string): S | rcs.EmptyObject => {
     const state = useStateContext(slice);
     return state ?? {};
   };

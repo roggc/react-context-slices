@@ -12,19 +12,16 @@ Here is an example app of how to use it. First we create a slice named counter. 
 
 ```javascript
 //slices/counter.ts
-import { createSlice, GenericAction, GenericDraft } from "react-context-slices";
+import { createSlice, A, D } from "react-context-slices";
 
-type State = {
-  value: number,
+type S = {
+  value: number;
 };
 
 export const name = "counter";
-const initialState = { value: 0 };
+const initialState: S = { value: 0 };
 const INCREMENT = "INCREMENT";
-const reducer = (
-  draft: GenericDraft<State>,
-  { type, payload }: GenericAction
-) => {
+const reducer = (draft: D<S>, { type }: A) => {
   switch (type) {
     case INCREMENT:
       draft.value += 1;
@@ -34,7 +31,7 @@ const reducer = (
   }
 };
 
-export const { useValues, useActions } = createSlice(
+export const { useValues, useActions } = createSlice<S, A>(
   reducer,
   initialState,
   name,
@@ -106,7 +103,7 @@ export default Counter;
 The local storage part is optional. When we created the slice of context in the **_counter.ts_** file we did:
 
 ```javascript
-export const { useValues, useActions } = createSlice(
+export const { useValues, useActions } = createSlice<S,A>(
   reducer,
   initialState,
   name,
@@ -122,11 +119,11 @@ export const { useValues, useActions } = createSlice(
 The last parameter, the array of keys, is optional. If not given is an empty array. I have put it in this example in case you need to persist some data in your local storage while using this library. A tipical scenario would be for example a dark/light mode. We want when the user refresh the page to stay in the mode he chose. In case you use this feature I advice you to select specific names, like **_counterValue_** rather than **_value_**. If you do this, then this will need to be changed as well:
 
 ```javascript
-type State = {
+type S = {
   counterValue: number,
 };
 
-const initialState = { counterValue: 0 };
+const initialState: S = { counterValue: 0 };
 ```
 
 The **_useLocalStorage_** hook is a hook you can find on internet.
