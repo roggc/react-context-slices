@@ -9,13 +9,13 @@ const providers: ContextProviderType[] = [];
 
 export type UseActionsResult = {
   [x: string]: {
-    [y: string]: <F extends () => void>(...args: Parameters<F>) => void;
+    [y: string]: (...args: unknown[]) => void;
   };
 };
 
 export type GenericAction = { type: string; payload?: unknown };
 export type GenericDraft<S> = Draft<Immutable<S>>;
-
+export type UseDispatch = () => React.Dispatch<GenericAction>;
 export type EmptyObject = {};
 
 export const createSlice = <S, A>(
