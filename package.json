@@ -1,15 +1,12 @@
 {
   "name": "react-context-slices",
-  "version": "2.1.6",
+  "version": "2.1.7",
   "description": "",
   "main": "dist/index.js",
-  "typings": "dist/index.d.ts",
+  "typings": "src/types/index.d.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "rm -rf dist && NODE_ENV=production babel --extensions .ts,.tsx ./src -d ./dist",
-    "build2": "tsc",
-    "show-config": "tsc --showConfig",
-    "dts": "tsc --emitDeclarationOnly --declaration ./src/index.tsx"
+    "build": "tsc"
   },
   "repository": {
     "type": "git",

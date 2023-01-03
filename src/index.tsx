@@ -1,7 +1,7 @@
-/// <reference path = "./index.d.ts" />
+/// <reference path="./types/index.d.ts" />
 import * as rcs from "react-context-slices";
 import * as React from "react";
-import { useImmerReducer, ImmerReducer } from "use-immer";
+import { ImmerReducer, useImmerReducer } from "use-immer";
 
 const providers: rcs.ContextProviderType[] = [];
 
