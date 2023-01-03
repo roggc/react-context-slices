@@ -1,7 +1,7 @@
 {
   "name": "react-context-slices",
   "version": "2.1.7",
-  "description": "",
+  "description": "Work with React Context in an easy an optimal way, similar to Redux.",
   "main": "dist/index.js",
   "typings": "src/types/index.d.ts",
   "scripts": {
@@ -12,7 +12,12 @@
     "type": "git",
     "url": "https://github.com/roggc/react-context-slices.git"
   },
-  "keywords": [],
+  "keywords": [
+    "react",
+    "context",
+    "redux",
+    "slices"
+  ],
   "author": "",
   "license": "ISC",
   "dependencies": {
