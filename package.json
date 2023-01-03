@@ -11,6 +11,10 @@
     "show-config": "tsc --showConfig",
     "dts": "tsc --emitDeclarationOnly --declaration ./src/index.tsx"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/roggc/react-context-slices.git"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
