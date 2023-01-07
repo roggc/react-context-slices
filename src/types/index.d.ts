@@ -15,6 +15,9 @@ declare module "react-context-slices" {
   export type EmptyObject = {};
   export type D<S> = GenericDraft<S>;
   export type A = GenericAction;
+  export type StorageType = {
+    getItem: (key: string) => Promise<string | null>;
+  } | null;
   export const createSlice: <S, A>(
     reducer: ImmerReducer<S, A>,
     initialState: S,
@@ -22,7 +25,8 @@ declare module "react-context-slices" {
     getUseActions: (
       useDispatch: () => React.Dispatch<A>
     ) => () => rcs.UseActionsResult,
-    localStorageKeys?: string[]
+    localStorageKeys?: string[],
+    AsyncStorage?: StorageType
   ) => {
     useValues: (slice: string) => S | rcs.EmptyObject;
     useActions: () => rcs.UseActionsResult;

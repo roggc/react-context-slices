@@ -128,6 +128,91 @@ const initialState: S = { counterValue: 0 };
 
 The **_useLocalStorage_** hook is a hook you can find on internet.
 
+In case of **_React Native_** we would have done instead:
+
+```javascript
+import {createSlice, D, A} from 'react-context-slices';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+type S = {
+  counterValue: number;
+};
+
+export const name = 'counter';
+const initialState: S = {counterValue: 0};
+const INCREMENT = 'INCREMENT';
+const reducer = (draft: D<S>, {type}: A) => {
+  switch (type) {
+    case INCREMENT:
+      draft.counterValue += 1;
+      break;
+    default:
+      break;
+  }
+};
+export const {useValues, useActions} = createSlice<S, A>(
+  reducer,
+  initialState,
+  name,
+  useDispatch => () => {
+    const dispatch = useDispatch();
+    const increment = () => {
+      dispatch({type: INCREMENT});
+    };
+    return {[name]: {increment}};
+  },
+  ['counterValue'],
+  AsyncStorage,
+);
+```
+
+So the key difference here with respect web development is that we pass the instance of **_AsyncStorage_** to the **_createSlice_** function as a parameter (it defaults to **_null_**, in which that case **_localStorage_** is used).
+
+And in the **_Counter_** component:
+
+```javascript
+import React, { useEffect } from "react";
+import { useValues, useActions, counter } from "../slices";
+import { Button, Text, View, StyleSheet } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
+const Counter = () => {
+  const { counterValue } = useValues(counter);
+  const {
+    [counter]: { increment },
+  } = useActions();
+
+  useEffect(() => {
+    (async () => {
+      if (counterValue !== undefined && counterValue !== null) {
+        await AsyncStorage.setItem(
+          "counterValue",
+          JSON.stringify(counterValue)
+        );
+      }
+    })();
+  }, [counterValue]);
+
+  return (
+    <View style={styles.container}>
+      <Button title="increment" onPress={increment} />
+      <View>
+        <Text>{`counter value is ${counterValue}`}</Text>
+      </View>
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    paddingTop: 100,
+  },
+});
+
+export default Counter;
+```
+
 Finally, this would be the code for the **_App_** component:
 
 ```javascript
