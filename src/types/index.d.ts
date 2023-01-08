@@ -18,12 +18,12 @@ declare module "react-context-slices" {
   export type AsyncStorageType = {
     getItem: (key: string) => Promise<string | null>;
   } | null;
-  export declare const createSlice: <S, A>(
-    reducer: ImmerReducer<S, A>,
+  export declare const createSlice: <S>(
+    reducer: ImmerReducer<S, rcs.GenericAction>,
     initialState: S,
     name: string,
     getUseActions: (
-      useDispatch: () => React.Dispatch<A>
+      useDispatch: () => React.Dispatch<rcs.A>
     ) => () => rcs.UseActionsResult,
     localStorageKeys?: string[],
     AsyncStorage?: AsyncStorageType
