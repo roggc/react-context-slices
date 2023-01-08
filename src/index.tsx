@@ -3,9 +3,7 @@ import * as rcs from "react-context-slices";
 import * as React from "react";
 import { ImmerReducer, useImmerReducer } from "use-immer";
 
-const providers: rcs.ContextProviderType[] = [];
-
-type StorageType = {
+type AsyncStorageType = {
   getItem: (key: string) => Promise<string | null>;
 } | null;
 
@@ -17,7 +15,7 @@ export const createSlice = <S, A>(
     useDispatch: () => React.Dispatch<A>
   ) => () => rcs.UseActionsResult,
   localStorageKeys: string[] = [],
-  AsyncStorage: StorageType = null
+  AsyncStorage: AsyncStorageType = null
 ) => {
   const StateContext = React.createContext<S | rcs.EmptyObject>({});
   const DispatchContext = React.createContext<React.Dispatch<A>>(() => {});
@@ -94,8 +92,6 @@ export const createSlice = <S, A>(
     );
   };
 
-  providers.push(Provider);
-
   return {
     useValues,
     useActions,
@@ -103,7 +99,7 @@ export const createSlice = <S, A>(
   };
 };
 
-export const composeProviders = () => {
+export const composeProviders = (providers: rcs.ContextProviderType[]) => {
   const NeutralProvider = ({ children }: React.PropsWithChildren) => (
     <>{children}</>
   );
