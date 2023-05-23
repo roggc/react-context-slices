@@ -138,11 +138,9 @@ export const createTypicalSlice = (
   isPersist: boolean = false,
   AsyncStorage: any = null
 ): {
-  useValues: (slice: string) =>
-    | rcs.EmptyObject
-    | {
-        [key: string]: any;
-      };
+  useValues: (slice: string) => {
+    [key: string]: any;
+  };
   useActions: () => rcs.UseActionsResult;
   Provider: rcs.ContextProviderType;
 } => {
@@ -196,15 +194,24 @@ export const getHooksAndProviderFromSlices = (
         providers: [...res.providers, values.Provider],
       }),
       {
-        useValues: ((slice: string) => ({})) as (slice: string) =>
-          | rcs.EmptyObject
-          | {
-              value: any;
-            },
+        useValues: ((slice: string) => ({})) as (slice: string) => {
+          [key: string]: any;
+        },
         useActions: (() => ({})) as () => rcs.UseActionsResult,
         providers: [] as rcs.ContextProviderType[],
       }
     );
-
-  return { useValues, useActions, Provider: composeProviders(providers) };
+  const useSlice = (name: string) => {
+    const { [name]: value } = useValues(name);
+    const {
+      [name]: { set },
+    } = useActions();
+    return [value, set];
+  };
+  return {
+    useValues,
+    useActions,
+    useSlice,
+    Provider: composeProviders(providers),
+  };
 };
