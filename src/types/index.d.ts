@@ -50,7 +50,9 @@ declare module "react-context-slices" {
     Provider: rcs.ContextProviderType;
   };
   export declare const getHooksAndProviderFromSlices: (
-    slices: any,
+    slices: {
+      [key: string]: any;
+    },
     persist?: {
       [key: string]: boolean;
     },
