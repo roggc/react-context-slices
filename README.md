@@ -10,20 +10,24 @@ To install this package you must do **_npm i react-context-slices_** in the term
 
 ```javascript
 //slices.ts
+
 import { getHooksAndProviderFromSlices } from "react-context-slices";
 
 export const { useValues, useActions, Provider } =
   getHooksAndProviderFromSlices({
     counter: 0,
+    //other possible slices, for example:
+    //todos:[],
   });
 ```
 
 ```javascript
 //hooks/use-slice.ts
+
 import { useValues, useActions } from "../slices";
 
 export const useSlice = (name: string) => {
-  const { value } = useValues(name);
+  const { [name]: value } = useValues(name);
   const {
     [name]: { set },
   } = useActions();
@@ -32,6 +36,8 @@ export const useSlice = (name: string) => {
 ```
 
 ```javascript
+//app.tsx
+
 import { useSlice } from "./hooks/use-slice";
 
 const App = () => {
@@ -49,6 +55,7 @@ export default App;
 
 ```javascript
 //index.tsx
+
 import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App";
@@ -64,6 +71,117 @@ root.render(
     </Provider>
   </React.StrictMode>
 );
+```
+
+In case you want to persist some slices to local storage, you do it as follows:
+
+```javascript
+//slices.ts
+
+import { getHooksAndProviderFromSlices } from "react-context-slices";
+
+export const { useValues, useActions, Provider } =
+  getHooksAndProviderFromSlices(
+    {
+      counter: 0,
+      //other possible slices, for example:
+      //todos:[],
+    },
+    { counter: true, //todos:true, } // <-- this will get initial value of slice from local storage
+  );
+```
+
+and then in your component you do:
+
+```javascript
+//app.tsx
+
+import { useSlice } from "./hooks/use-slice";
+import { useEffect } from "react";
+
+const App = () => {
+  const [counter, setCounter] = useSlice("counter");
+
+  useEffect(() => {
+    localStorage.setItem("counter", JSON.stringify(counter));
+  }, [counter]);
+
+  return (
+    <>
+      <button onClick={() => setCounter(counter + 1)}>increment</button>
+      {counter}
+    </>
+  );
+};
+
+export default App;
+```
+
+For React Native you do the same but pass `AsyncStorage` as a parameter to `getHooksAndProviderFromSlices`:
+
+```javascript
+//slices.ts
+import { getHooksAndProviderFromSlices } from "react-context-slices";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
+export const { useValues, useActions, Provider } =
+  getHooksAndProviderFromSlices(
+    {
+      counter: 0,
+      //other possible slices, for example:
+      //todos:[],
+    },
+    { counter: true /*,todos:true,*/ }, // <-- this will get initial value of slice from local storage
+    AsyncStorage
+  );
+```
+
+and in your component you do (for React Native):
+
+```javascript
+import React, { useEffect, useRef } from "react";
+import { useSlice } from "./hooks/use-slice";
+import { Button, Text, View, StyleSheet } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
+const Counter = () => {
+  const isInitialMount = useRef(true);
+  const [counter, setCounter] = useSlice("counter");
+
+  useEffect(() => {
+    (async () => {
+      if (
+        counter !== null &&
+        counter !== undefined &&
+        !isInitialMount.current
+      ) {
+        await AsyncStorage.setItem("counter", JSON.stringify(counter));
+      }
+    })();
+  }, [counter]);
+
+  useEffect(() => {
+    isInitialMount.current = false;
+  }, []);
+
+  return (
+    <View style={styles.container}>
+      <Button title="increment" onPress={() => setCounter(counter + 1)} />
+      <View>
+        <Text>{`counter value is ${counter}`}</Text>
+      </View>
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    paddingTop: 100,
+  },
+});
+
+export default Counter;
 ```
 
 ## How to use it (verbose - the old way)

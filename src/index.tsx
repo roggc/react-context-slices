@@ -134,24 +134,26 @@ export const composeProviders = (providers: rcs.ContextProviderType[]) => {
 
 export const createTypicalSlice = (
   name: string,
-  data: any
+  data: any,
+  isPersist: boolean = false,
+  AsyncStorage: any = null
 ): {
   useValues: (slice: string) =>
     | rcs.EmptyObject
     | {
-        value: any;
+        [key: string]: any;
       };
   useActions: () => rcs.UseActionsResult;
   Provider: rcs.ContextProviderType;
 } => {
   const initialState = {
-    value: data,
+    [name]: data,
   };
   const SET = "SET";
   const reducer = (draft: rcs.D<any>, { type, payload }: rcs.A) => {
     switch (type) {
       case SET:
-        draft.value = payload;
+        draft[name] = payload;
         break;
       default:
         break;
@@ -168,14 +170,22 @@ export const createTypicalSlice = (
         [dispatch]
       );
       return { [name]: { set } };
-    }
+    },
+    isPersist ? [name] : [],
+    AsyncStorage
   );
   return { useValues, useActions, Provider };
 };
 
-export const getHooksAndProviderFromSlices = (slices: any) => {
+export const getHooksAndProviderFromSlices = (
+  slices: any,
+  persist: { [key: string]: boolean } = {},
+  AsyncStorage: any = null
+) => {
   const { useValues, useActions, providers } = Object.entries(slices)
-    .map(([name, data]) => createTypicalSlice(name, data))
+    .map(([name, data]) =>
+      createTypicalSlice(name, data, persist[name], AsyncStorage)
+    )
     .reduce(
       (res, values) => ({
         useValues: (slice: string) => ({
