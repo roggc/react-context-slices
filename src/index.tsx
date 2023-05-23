@@ -178,7 +178,7 @@ export const createTypicalSlice = (
 };
 
 export const getHooksAndProviderFromSlices = (
-  slices: any,
+  slices: { [key: string]: any },
   persist: { [key: string]: boolean } = {},
   AsyncStorage: any = null
 ) => {
