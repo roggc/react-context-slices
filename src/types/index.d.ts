@@ -35,4 +35,25 @@ declare module "react-context-slices" {
   export declare const composeProviders: (
     providers: rcs.ContextProviderType[]
   ) => rcs.ContextProviderType;
+  export declare const createTypicalSlice: (
+    name: string,
+    data: any
+  ) => {
+    useValues: (slice: string) =>
+      | rcs.EmptyObject
+      | {
+          value: any;
+        };
+    useActions: () => rcs.UseActionsResult;
+    Provider: rcs.ContextProviderType;
+  };
+  export declare const getHooksAndProviderFromSlices: (slices: any) => {
+    useValues: (slice: string) =>
+      | rcs.EmptyObject
+      | {
+          value: any;
+        };
+    useActions: () => rcs.UseActionsResult;
+    Provider: rcs.ContextProviderType;
+  };
 }
