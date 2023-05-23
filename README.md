@@ -107,21 +107,20 @@ For React Native you do the same but pass `AsyncStorage` as a parameter to `getH
 import { getHooksAndProviderFromSlices } from "react-context-slices";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-export const { useValues, useActions, Provider } =
-  getHooksAndProviderFromSlices(
-    {
-      counter: 0,
-    },
-    { counter: true }, // <-- this will get initial value of slice from local storage
-    AsyncStorage
-  );
+export const { useSlice, Provider } = getHooksAndProviderFromSlices(
+  {
+    counter: 0,
+  },
+  { counter: true }, // <-- this will get initial value of slice from local storage
+  AsyncStorage
+);
 ```
 
 and in your component you do (for React Native):
 
 ```javascript
 import React, { useEffect, useRef } from "react";
-import { useSlice } from "./hooks/use-slice";
+import { useSlice } from "./slices";
 import { Button, Text, View, StyleSheet } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
