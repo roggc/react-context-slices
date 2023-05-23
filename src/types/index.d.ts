@@ -37,17 +37,25 @@ declare module "react-context-slices" {
   ) => rcs.ContextProviderType;
   export declare const createTypicalSlice: (
     name: string,
-    data: any
+    data: any,
+    isPersist?: boolean,
+    AsyncStorage?: any
   ) => {
     useValues: (slice: string) =>
       | rcs.EmptyObject
       | {
-          value: any;
+          [key: string]: any;
         };
     useActions: () => rcs.UseActionsResult;
     Provider: rcs.ContextProviderType;
   };
-  export declare const getHooksAndProviderFromSlices: (slices: any) => {
+  export declare const getHooksAndProviderFromSlices: (
+    slices: any,
+    persist?: {
+      [key: string]: boolean;
+    },
+    AsyncStorage?: any
+  ) => {
     useValues: (slice: string) =>
       | rcs.EmptyObject
       | {
