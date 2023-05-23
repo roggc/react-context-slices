@@ -41,11 +41,9 @@ declare module "react-context-slices" {
     isPersist?: boolean,
     AsyncStorage?: any
   ) => {
-    useValues: (slice: string) =>
-      | rcs.EmptyObject
-      | {
-          [key: string]: any;
-        };
+    useValues: (slice: string) => {
+      [key: string]: any;
+    };
     useActions: () => rcs.UseActionsResult;
     Provider: rcs.ContextProviderType;
   };
@@ -58,12 +56,11 @@ declare module "react-context-slices" {
     },
     AsyncStorage?: any
   ) => {
-    useValues: (slice: string) =>
-      | rcs.EmptyObject
-      | {
-          value: any;
-        };
+    useValues: (slice: string) => {
+      [key: string]: any;
+    };
     useActions: () => rcs.UseActionsResult;
+    useSlice: (name: string) => any[];
     Provider: rcs.ContextProviderType;
   };
 }

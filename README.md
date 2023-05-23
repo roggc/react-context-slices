@@ -13,32 +13,17 @@ To install this package you must do **_npm i react-context-slices_** in the term
 
 import { getHooksAndProviderFromSlices } from "react-context-slices";
 
-export const { useValues, useActions, Provider } =
-  getHooksAndProviderFromSlices({
-    counter: 0,
-    //other possible slices, for example:
-    //todos:[],
-  });
-```
-
-```javascript
-//hooks/use-slice.ts
-
-import { useValues, useActions } from "../slices";
-
-export const useSlice = (name: string) => {
-  const { [name]: value } = useValues(name);
-  const {
-    [name]: { set },
-  } = useActions();
-  return [value, set];
-};
+export const { useSlice, Provider } = getHooksAndProviderFromSlices({
+  counter: 0,
+  //other possible slices, for example:
+  //todos:[],
+});
 ```
 
 ```javascript
 //app.tsx
 
-import { useSlice } from "./hooks/use-slice";
+import { useSlice } from "./slices";
 
 const App = () => {
   const [counter, setCounter] = useSlice("counter");
@@ -73,22 +58,19 @@ root.render(
 );
 ```
 
-In case you want to persist some slices to local storage, you do it as follows:
+In case you want to get initial value of a slice from local storage, you do:
 
 ```javascript
 //slices.ts
 
 import { getHooksAndProviderFromSlices } from "react-context-slices";
 
-export const { useValues, useActions, Provider } =
-  getHooksAndProviderFromSlices(
-    {
-      counter: 0,
-      //other possible slices, for example:
-      //todos:[],
-    },
-    { counter: true, //todos:true, } // <-- this will get initial value of slice from local storage
-  );
+export const { useSlice, Provider } = getHooksAndProviderFromSlices(
+  {
+    counter: 0,
+  },
+  { counter: true } // <-- this will get initial value of slice from local storage
+);
 ```
 
 and then in your component you do:
@@ -102,6 +84,7 @@ import { useEffect } from "react";
 const App = () => {
   const [counter, setCounter] = useSlice("counter");
 
+  // this persist the value to local storage
   useEffect(() => {
     localStorage.setItem("counter", JSON.stringify(counter));
   }, [counter]);
@@ -128,10 +111,8 @@ export const { useValues, useActions, Provider } =
   getHooksAndProviderFromSlices(
     {
       counter: 0,
-      //other possible slices, for example:
-      //todos:[],
     },
-    { counter: true /*,todos:true,*/ }, // <-- this will get initial value of slice from local storage
+    { counter: true }, // <-- this will get initial value of slice from local storage
     AsyncStorage
   );
 ```
@@ -184,7 +165,7 @@ const styles = StyleSheet.create({
 export default Counter;
 ```
 
-## How to use it (verbose - the old way)
+## How to use it (verbose and boilerplate - the old way (not recomended))
 
 Here is an example app of how to use it. First we create a slice named counter. Create a **_slices_** folder in your project and add a **_counter.ts_** file (javascript is the same but without the types stuff):
 
