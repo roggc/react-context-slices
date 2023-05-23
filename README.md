@@ -6,7 +6,67 @@ This package is meant to use **_React Context_** in an optimal and easy way. It 
 
 To install this package you must do **_npm i react-context-slices_** in the terminal in the root directory of your React project.
 
-## How to use it
+## How to use it (fast - the new way)
+
+```javascript
+//slices.ts
+import { getHooksAndProviderFromSlices } from "react-context-slices";
+
+export const { useValues, useActions, Provider } =
+  getHooksAndProviderFromSlices({
+    counter: 0,
+  });
+```
+
+```javascript
+//hooks/use-slice.ts
+import { useValues, useActions } from "../slices";
+
+export const useSlice = (name: string) => {
+  const { value } = useValues(name);
+  const {
+    [name]: { set },
+  } = useActions();
+  return [value, set];
+};
+```
+
+```javascript
+import { useSlice } from "./hooks/use-slice";
+
+const App = () => {
+  const [counter, setCounter] = useSlice("counter");
+  return (
+    <>
+      <button onClick={() => setCounter(counter + 1)}>increment</button>
+      {counter}
+    </>
+  );
+};
+
+export default App;
+```
+
+```javascript
+//index.tsx
+import React from "react";
+import ReactDOM from "react-dom/client";
+import App from "./App";
+import { Provider } from "./slices";
+
+const root = ReactDOM.createRoot(
+  document.getElementById("root") as HTMLElement
+);
+root.render(
+  <React.StrictMode>
+    <Provider>
+      <App />
+    </Provider>
+  </React.StrictMode>
+);
+```
+
+## How to use it (verbose - the old way)
 
 Here is an example app of how to use it. First we create a slice named counter. Create a **_slices_** folder in your project and add a **_counter.ts_** file (javascript is the same but without the types stuff):
 

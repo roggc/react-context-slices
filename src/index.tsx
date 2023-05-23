@@ -131,3 +131,70 @@ export const composeProviders = (providers: rcs.ContextProviderType[]) => {
     NeutralProvider
   );
 };
+
+export const createTypicalSlice = (
+  name: string,
+  data: any
+): {
+  useValues: (slice: string) =>
+    | rcs.EmptyObject
+    | {
+        value: any;
+      };
+  useActions: () => rcs.UseActionsResult;
+  Provider: rcs.ContextProviderType;
+} => {
+  const initialState = {
+    value: data,
+  };
+  const SET = "SET";
+  const reducer = (draft: rcs.D<any>, { type, payload }: rcs.A) => {
+    switch (type) {
+      case SET:
+        draft.value = payload;
+        break;
+      default:
+        break;
+    }
+  };
+  const { useValues, useActions, Provider } = createSlice(
+    reducer,
+    initialState,
+    name,
+    (useDispatch) => () => {
+      const dispatch = useDispatch();
+      const set = React.useCallback(
+        (value: any) => dispatch({ type: SET, payload: value }),
+        [dispatch]
+      );
+      return { [name]: { set } };
+    }
+  );
+  return { useValues, useActions, Provider };
+};
+
+export const getHooksAndProviderFromSlices = (slices: any) => {
+  const { useValues, useActions, providers } = Object.entries(slices)
+    .map(([name, data]) => createTypicalSlice(name, data))
+    .reduce(
+      (res, values) => ({
+        useValues: (slice: string) => ({
+          ...res.useValues(slice),
+          ...values.useValues(slice),
+        }),
+        useActions: () => ({ ...res.useActions(), ...values.useActions() }),
+        providers: [...res.providers, values.Provider],
+      }),
+      {
+        useValues: ((slice: string) => ({})) as (slice: string) =>
+          | rcs.EmptyObject
+          | {
+              value: any;
+            },
+        useActions: (() => ({})) as () => rcs.UseActionsResult,
+        providers: [] as rcs.ContextProviderType[],
+      }
+    );
+
+  return { useValues, useActions, Provider: composeProviders(providers) };
+};
