@@ -1,32 +1,46 @@
 /// <reference path="./types/index.d.ts" />
-import * as rcs from "react-context-slices";
 import * as React from "react";
-import { ImmerReducer, useImmerReducer } from "use-immer";
 
 type AsyncStorageType = {
   getItem: (key: string) => Promise<string | null>;
 } | null;
 
-export const createSlice = <S,>(
-  reducer: ImmerReducer<S, rcs.A>,
+type ContextProviderType = ({
+  children,
+}: React.PropsWithChildren) => JSX.Element;
+
+type UseActionsResult = {
+  [x: string]: {
+    [y: string]: (...args: any[]) => void;
+  };
+};
+
+type GenericAction = { type: string; payload?: any };
+
+type EmptyObject = {};
+
+const createSlice = <S,>(
+  reducer: React.Reducer<S, GenericAction>,
   initialState: S,
   name: string,
   getUseActions: (
-    useDispatch: () => React.Dispatch<rcs.A>
-  ) => () => rcs.UseActionsResult,
+    useDispatch: () => React.Dispatch<GenericAction>
+  ) => () => UseActionsResult,
   localStorageKeys: string[] = [],
   AsyncStorage: AsyncStorageType = null
 ) => {
-  const StateContext = React.createContext<S | rcs.EmptyObject>({});
-  const DispatchContext = React.createContext<React.Dispatch<rcs.A>>(() => {});
+  const StateContext = React.createContext<S | EmptyObject>({});
+  const DispatchContext = React.createContext<React.Dispatch<GenericAction>>(
+    () => {}
+  );
 
   const useStateContext = (slice: string) =>
     React.useContext(
-      slice === name ? StateContext : ({} as React.Context<S | rcs.EmptyObject>)
+      slice === name ? StateContext : ({} as React.Context<S | EmptyObject>)
     );
   const useDispatchContext = () => React.useContext(DispatchContext);
 
-  const useValues = (slice: string): S | rcs.EmptyObject => {
+  const useValues = (slice: string): S | EmptyObject => {
     const state = useStateContext(slice);
     return state ?? {};
   };
@@ -57,16 +71,19 @@ export const createSlice = <S,>(
   const Provider = ({ children }: React.PropsWithChildren) => {
     const __SET_INIT_PERSISTED_STATE_RN__ = "__SET_INIT_PERSISTED_STATE_RN__";
     const reducerWrapper =
-      (reducer: ImmerReducer<S, rcs.A>) => (draft: rcs.D<S>, action: rcs.A) => {
+      (reducer: any) => (state: any, action: GenericAction) => {
         if (action.type === __SET_INIT_PERSISTED_STATE_RN__) {
           Object.entries(action.payload).forEach(
-            ([key, value]: [string, any]) => (draft[key] = value)
+            ([key, value]: [string, any]) => (state[key] = value)
           );
           return;
         }
-        reducer(draft, action);
+        reducer(state, action);
       };
-    const [state, dispatch] = useImmerReducer(
+    const [state, dispatch] = React.useReducer<
+      | React.Reducer<S, GenericAction>
+      | ((state: any, action: GenericAction) => void)
+    >(
       !!AsyncStorage ? reducerWrapper(reducer) : reducer,
       initialState_ ?? initialState
     );
@@ -101,7 +118,7 @@ export const createSlice = <S,>(
     }, []);
 
     return (
-      <StateContext.Provider value={state}>
+      <StateContext.Provider value={state as S | EmptyObject}>
         <DispatchContext.Provider value={dispatch}>
           {children}
         </DispatchContext.Provider>
@@ -116,7 +133,7 @@ export const createSlice = <S,>(
   };
 };
 
-export const composeProviders = (providers: rcs.ContextProviderType[]) => {
+const composeProviders = (providers: ContextProviderType[]) => {
   const NeutralProvider = ({ children }: React.PropsWithChildren) => (
     <>{children}</>
   );
@@ -132,7 +149,7 @@ export const composeProviders = (providers: rcs.ContextProviderType[]) => {
   );
 };
 
-export const createTypicalSlice = (
+const createTypicalSlice = (
   name: string,
   data: any,
   isPersist: boolean = false,
@@ -141,23 +158,22 @@ export const createTypicalSlice = (
   useValues: (slice: string) => {
     [key: string]: any;
   };
-  useActions: () => rcs.UseActionsResult;
-  Provider: rcs.ContextProviderType;
+  useActions: () => UseActionsResult;
+  Provider: ContextProviderType;
 } => {
   const initialState = {
     [name]: data,
   };
   const SET = "SET";
-  const reducer = (draft: rcs.D<any>, { type, payload }: rcs.A) => {
+  const reducer = (state: any, { type, payload }: GenericAction) => {
     switch (type) {
       case SET:
-        draft[name] = payload;
-        break;
+        return { ...state, [name]: payload };
       default:
-        break;
+        return state;
     }
   };
-  const { useValues, useActions, Provider } = createSlice(
+  const { useValues, useActions, Provider } = createSlice<{ [x: string]: any }>(
     reducer,
     initialState,
     name,
@@ -175,7 +191,7 @@ export const createTypicalSlice = (
   return { useValues, useActions, Provider };
 };
 
-export const getHooksAndProviderFromSlices = (
+export const getHookAndProviderFromSlices = (
   slices: { [key: string]: any },
   persist: { [key: string]: boolean } = {},
   AsyncStorage: any = null
@@ -197,8 +213,8 @@ export const getHooksAndProviderFromSlices = (
         useValues: ((slice: string) => ({})) as (slice: string) => {
           [key: string]: any;
         },
-        useActions: (() => ({})) as () => rcs.UseActionsResult,
-        providers: [] as rcs.ContextProviderType[],
+        useActions: (() => ({})) as () => UseActionsResult,
+        providers: [] as ContextProviderType[],
       }
     );
   const useSlice = (name: string) => {
@@ -209,8 +225,6 @@ export const getHooksAndProviderFromSlices = (
     return [value, set];
   };
   return {
-    useValues,
-    useActions,
     useSlice,
     Provider: composeProviders(providers),
   };
