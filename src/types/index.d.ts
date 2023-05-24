@@ -2,7 +2,7 @@ declare module "react-context-slices" {
   type ContextProviderType = ({
     children,
   }: React.PropsWithChildren) => JSX.Element;
-  export declare const getHookAndProviderFromSlices: (
+  declare const getHookAndProviderFromSlices: (
     slices: {
       [key: string]: any;
     },
@@ -14,4 +14,5 @@ declare module "react-context-slices" {
     useSlice: (name: string) => any[];
     Provider: ContextProviderType;
   };
+  export default getHookAndProviderFromSlices;
 }

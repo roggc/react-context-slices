@@ -191,7 +191,7 @@ const createTypicalSlice = (
   return { useValues, useActions, Provider };
 };
 
-export const getHookAndProviderFromSlices = (
+const getHookAndProviderFromSlices = (
   slices: { [key: string]: any },
   persist: { [key: string]: boolean } = {},
   AsyncStorage: any = null
@@ -229,3 +229,5 @@ export const getHookAndProviderFromSlices = (
     Provider: composeProviders(providers),
   };
 };
+
+export default getHookAndProviderFromSlices;
