@@ -15,8 +15,10 @@ import { getHookAndProviderFromSlices } from "react-context-slices";
 
 export const { useSlice, Provider } = getHookAndProviderFromSlices({
   counter: 0,
-  //other possible slices, for example:
-  //todos:[],
+  // rest of slices, for example:
+  // todos: [],
+  // counter2: 0,
+  // etc.
 });
 ```
 
@@ -68,8 +70,11 @@ import { getHookAndProviderFromSlices } from "react-context-slices";
 export const { useSlice, Provider } = getHookAndProviderFromSlices(
   {
     counter: 0,
+    todos: [],
+    counter2: 0,
+    // etc.
   },
-  { counter: true } // <-- this will get initial value of slice from local storage
+  { counter: true, counter2: true } // <-- this will get initial value of slice from local storage for slices 'counter' and 'counter2', but not for 'todos' slice.
 );
 ```
 
@@ -110,6 +115,9 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 export const { useSlice, Provider } = getHookAndProviderFromSlices(
   {
     counter: 0,
+    counter2: 0,
+    todos: [],
+    // etc.
   },
   { counter: true }, // <-- this will get initial value of slice 'counter' from local storage
   AsyncStorage // <-- pass this for React Native
