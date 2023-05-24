@@ -168,7 +168,9 @@ const createTypicalSlice = (
   const reducer = (state: any, { type, payload }: GenericAction) => {
     switch (type) {
       case SET:
-        return { ...state, [name]: payload };
+        return typeof payload === "function"
+          ? { ...state, [name]: payload(state[name]) }
+          : { ...state, [name]: payload };
       default:
         return state;
     }

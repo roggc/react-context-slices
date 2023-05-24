@@ -1,6 +1,6 @@
 {
   "name": "react-context-slices",
-  "version": "4.0.0",
+  "version": "4.1.0",
   "description": "Work with React Context in an easy an optimal way!",
   "main": "dist/index.js",
   "typings": "src/types/index.d.ts",
