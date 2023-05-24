@@ -11,7 +11,7 @@ To install this package you must do **_npm i react-context-slices_** in the term
 ```javascript
 //slices.ts
 
-import { getHookAndProviderFromSlices } from "react-context-slices";
+import getHookAndProviderFromSlices from "react-context-slices";
 
 export const { useSlice, Provider } = getHookAndProviderFromSlices({
   counter: 0,
@@ -65,7 +65,7 @@ In case you want to get initial value of a slice from local storage, you do:
 ```javascript
 //slices.ts
 
-import { getHookAndProviderFromSlices } from "react-context-slices";
+import getHookAndProviderFromSlices from "react-context-slices";
 
 export const { useSlice, Provider } = getHookAndProviderFromSlices(
   {
@@ -109,7 +109,7 @@ For React Native you do the same but pass `AsyncStorage` as a parameter to `getH
 
 ```javascript
 //slices.ts
-import { getHookAndProviderFromSlices } from "react-context-slices";
+import getHookAndProviderFromSlices from "react-context-slices";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export const { useSlice, Provider } = getHookAndProviderFromSlices(
