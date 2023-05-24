@@ -28,11 +28,11 @@ export const { useSlice, Provider } = getHookAndProviderFromSlices({
 import { useSlice } from "./slices";
 
 const App = () => {
-  const [counter, setCounter] = useSlice("counter");
+  const [count, setCount] = useSlice("counter");
   return (
     <>
-      <button onClick={() => setCounter(counter + 1)}>increment</button>
-      {counter}
+      <button onClick={() => setCount((c) => c + 1)}>increment</button>
+      {count}
     </>
   );
 };
@@ -87,17 +87,17 @@ import { useSlice } from "./hooks/use-slice";
 import { useEffect } from "react";
 
 const App = () => {
-  const [counter, setCounter] = useSlice("counter");
+  const [count, setCount] = useSlice("counter");
 
   // this persist the value to local storage
   useEffect(() => {
-    localStorage.setItem("counter", JSON.stringify(counter));
-  }, [counter]);
+    localStorage.setItem("counter", JSON.stringify(count));
+  }, [count]);
 
   return (
     <>
-      <button onClick={() => setCounter(counter + 1)}>increment</button>
-      {counter}
+      <button onClick={() => setCount((c) => c + 1)}>increment</button>
+      {count}
     </>
   );
 };
@@ -134,19 +134,15 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const Counter = () => {
   const isInitialMount = useRef(true);
-  const [counter, setCounter] = useSlice("counter");
+  const [count, setCount] = useSlice("counter");
 
   useEffect(() => {
     (async () => {
-      if (
-        counter !== null &&
-        counter !== undefined &&
-        !isInitialMount.current
-      ) {
-        await AsyncStorage.setItem("counter", JSON.stringify(counter));
+      if (count !== null && count !== undefined && !isInitialMount.current) {
+        await AsyncStorage.setItem("counter", JSON.stringify(count));
       }
     })();
-  }, [counter]);
+  }, [count]);
 
   useEffect(() => {
     isInitialMount.current = false;
@@ -154,9 +150,9 @@ const Counter = () => {
 
   return (
     <View style={styles.container}>
-      <Button title="increment" onPress={() => setCounter(counter + 1)} />
+      <Button title="increment" onPress={() => setCount((c) => c + 1)} />
       <View>
-        <Text>{`counter value is ${counter}`}</Text>
+        <Text>{`counter value is ${count}`}</Text>
       </View>
     </View>
   );
