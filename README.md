@@ -22,13 +22,13 @@ export const { useSlice, Provider } = getHookAndProviderFromSlices({
 });
 ```
 
-```javascript
+```typescript
 //app.tsx
 
 import { useSlice } from "./slices";
 
 const App = () => {
-  const [count, setCount] = useSlice < number > "counter";
+  const [count, setCount] = useSlice<number>("counter");
   return (
     <>
       <button onClick={() => setCount((c) => c + 1)}>increment</button>
@@ -80,14 +80,14 @@ export const { useSlice, Provider } = getHookAndProviderFromSlices(
 
 and then in your component you do:
 
-```javascript
+```typescript
 //app.tsx
 
 import { useSlice } from "./hooks/use-slice";
 import { useEffect } from "react";
 
 const App = () => {
-  const [count, setCount] = useSlice < number > "counter";
+  const [count, setCount] = useSlice<number>("counter");
 
   // this persist the value to local storage
   useEffect(() => {
@@ -127,7 +127,7 @@ export const { useSlice, Provider } = getHookAndProviderFromSlices(
 
 and in your component you do (for React Native):
 
-```javascript
+```typescript
 import React, { useEffect, useRef } from "react";
 import { useSlice } from "./slices";
 import { Button, Text, View, StyleSheet } from "react-native";
@@ -135,7 +135,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const Counter = () => {
   const isInitialMount = useRef(true);
-  const [count, setCount] = useSlice < number > "counter";
+  const [count, setCount] = useSlice<number>("counter");
 
   useEffect(() => {
     (async () => {
