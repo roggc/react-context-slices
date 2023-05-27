@@ -1,10 +1,10 @@
 # react-context-slices
 
-This package is meant to use **_React Context_** in an optimal and very easy and fast way. It creates slices of context that can be consumed through a unique hook (`useSlice`, similar to `useState`).
+With this package, manage state through Context is extremely easy, fast and optimal. All you have to do is import a function (`getHookAndProviderFromSlices`) which will get you a hook and a provider. The hook, `useSlice`, it's similar to the `useState` hook, the only difference is that you must pass the name of the slice of Context you want to fetch. And that's all.
 
 ## Installation
 
-To install this package you must do **_npm i react-context-slices_** in the terminal in the root directory of your React project.
+`npm i react-context-slices`
 
 ## How to use it
 
@@ -28,7 +28,7 @@ export const { useSlice, Provider } = getHookAndProviderFromSlices({
 import { useSlice } from "./slices";
 
 const App = () => {
-  const [count, setCount] = useSlice("counter");
+  const [count, setCount] = useSlice < number > "counter";
   return (
     <>
       <button onClick={() => setCount((c) => c + 1)}>increment</button>
@@ -87,7 +87,7 @@ import { useSlice } from "./hooks/use-slice";
 import { useEffect } from "react";
 
 const App = () => {
-  const [count, setCount] = useSlice("counter");
+  const [count, setCount] = useSlice < number > "counter";
 
   // this persist the value to local storage
   useEffect(() => {
@@ -109,6 +109,7 @@ For React Native you do the same but pass `AsyncStorage` as a parameter to `getH
 
 ```javascript
 //slices.ts
+
 import getHookAndProviderFromSlices from "react-context-slices";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
@@ -134,7 +135,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const Counter = () => {
   const isInitialMount = useRef(true);
-  const [count, setCount] = useSlice("counter");
+  const [count, setCount] = useSlice < number > "counter";
 
   useEffect(() => {
     (async () => {
