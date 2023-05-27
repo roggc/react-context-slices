@@ -1,62 +1,36 @@
-/// <reference path="./types/index.d.ts" />
 import * as React from "react";
 
-type AsyncStorageType = {
-  getItem: (key: string) => Promise<string | null>;
-} | null;
-
-type ContextProviderType = ({
-  children,
-}: React.PropsWithChildren) => JSX.Element;
-
-type UseActionsResult = {
-  [x: string]: {
-    [y: string]: (...args: any[]) => void;
-  };
-};
-
-type GenericAction = { type: string; payload?: any };
-
-type EmptyObject = {};
-
-const createSlice = <S,>(
-  reducer: React.Reducer<S, GenericAction>,
-  initialState: S,
-  name: string,
-  getUseActions: (
-    useDispatch: () => React.Dispatch<GenericAction>
-  ) => () => UseActionsResult,
-  localStorageKeys: string[] = [],
-  AsyncStorage: AsyncStorageType = null
+const createSlice = (
+  reducer,
+  initialState,
+  name,
+  getUseActions,
+  localStorageKeys,
+  AsyncStorage = null
 ) => {
-  const StateContext = React.createContext<S | EmptyObject>({});
-  const DispatchContext = React.createContext<React.Dispatch<GenericAction>>(
-    () => {}
-  );
+  const StateContext = React.createContext({});
+  const DispatchContext = React.createContext(() => {});
 
-  const useStateContext = (slice: string) =>
-    React.useContext(
-      slice === name ? StateContext : ({} as React.Context<S | EmptyObject>)
-    );
+  const useStateContext = (slice) =>
+    React.useContext(slice === name ? StateContext : {});
   const useDispatchContext = () => React.useContext(DispatchContext);
 
-  const useValues = (slice: string): S | EmptyObject => {
+  const useValues = (slice) => {
     const state = useStateContext(slice);
     return state ?? {};
   };
 
   const useActions = getUseActions(useDispatchContext);
 
-  let initialState_: S | undefined = undefined;
+  let initialState_ = undefined;
 
   if (!!localStorageKeys.length && !AsyncStorage) {
-    let item: string | null = null;
+    let item = null;
     initialState_ = {
       ...initialState,
       ...localStorageKeys.reduce(
         (result, key) => ({
           ...result,
-          // eslint-disable-next-line no-cond-assign
           ...(!!(item = localStorage.getItem(key))
             ? {
                 [key]: JSON.parse(item),
@@ -68,22 +42,18 @@ const createSlice = <S,>(
     };
   }
 
-  const Provider = ({ children }: React.PropsWithChildren) => {
+  const Provider = ({ children }) => {
     const __SET_INIT_PERSISTED_STATE_RN__ = "__SET_INIT_PERSISTED_STATE_RN__";
-    const reducerWrapper =
-      (reducer: any) => (state: any, action: GenericAction) => {
-        if (action.type === __SET_INIT_PERSISTED_STATE_RN__) {
-          Object.entries(action.payload).forEach(
-            ([key, value]: [string, any]) => (state[key] = value)
-          );
-          return;
-        }
-        reducer(state, action);
-      };
-    const [state, dispatch] = React.useReducer<
-      | React.Reducer<S, GenericAction>
-      | ((state: any, action: GenericAction) => void)
-    >(
+    const reducerWrapper = (reducer) => (state, action) => {
+      if (action.type === __SET_INIT_PERSISTED_STATE_RN__) {
+        Object.entries(action.payload).forEach(
+          ([key, value]) => (state[key] = value)
+        );
+        return;
+      }
+      reducer(state, action);
+    };
+    const [state, dispatch] = React.useReducer(
       !!AsyncStorage ? reducerWrapper(reducer) : reducer,
       initialState_ ?? initialState
     );
@@ -91,12 +61,11 @@ const createSlice = <S,>(
     React.useEffect(() => {
       if (!!localStorageKeys.length && !!AsyncStorage) {
         (async () => {
-          let item: string | null | undefined = null;
+          let item = null;
           const updateState = {
             ...(await localStorageKeys.reduce(
               async (result, key) => ({
                 ...(await result),
-                // eslint-disable-next-line no-cond-assign
                 ...(!!(item = await AsyncStorage?.getItem?.(key))
                   ? {
                       [key]: JSON.parse(item),
@@ -106,7 +75,6 @@ const createSlice = <S,>(
               {}
             )),
           };
-
           return updateState;
         })().then((updateState) =>
           dispatch({
@@ -118,7 +86,7 @@ const createSlice = <S,>(
     }, []);
 
     return (
-      <StateContext.Provider value={state as S | EmptyObject}>
+      <StateContext.Provider value={state}>
         <DispatchContext.Provider value={dispatch}>
           {children}
         </DispatchContext.Provider>
@@ -133,10 +101,8 @@ const createSlice = <S,>(
   };
 };
 
-const composeProviders = (providers: ContextProviderType[]) => {
-  const NeutralProvider = ({ children }: React.PropsWithChildren) => (
-    <>{children}</>
-  );
+const composeProviders = (providers) => {
+  const NeutralProvider = ({ children }) => <>{children}</>;
   return providers.reduce(
     (AccProvider, Provider) =>
       ({ children }) =>
@@ -150,22 +116,16 @@ const composeProviders = (providers: ContextProviderType[]) => {
 };
 
 const createTypicalSlice = (
-  name: string,
-  data: any,
-  isPersist: boolean = false,
-  AsyncStorage: any = null
-): {
-  useValues: (slice: string) => {
-    [key: string]: any;
-  };
-  useActions: () => UseActionsResult;
-  Provider: ContextProviderType;
-} => {
+  name,
+  data,
+  isPersist = false,
+  AsyncStorage = null
+) => {
   const initialState = {
     [name]: data,
   };
   const SET = "SET";
-  const reducer = (state: any, { type, payload }: GenericAction) => {
+  const reducer = (state, { type, payload }) => {
     switch (type) {
       case SET:
         return typeof payload === "function"
@@ -175,14 +135,14 @@ const createTypicalSlice = (
         return state;
     }
   };
-  const { useValues, useActions, Provider } = createSlice<{ [x: string]: any }>(
+  const { useValues, useActions, Provider } = createSlice(
     reducer,
     initialState,
     name,
     (useDispatch) => () => {
       const dispatch = useDispatch();
       const set = React.useCallback(
-        (value: any) => dispatch({ type: SET, payload: value }),
+        (value) => dispatch({ type: SET, payload: value }),
         [dispatch]
       );
       return { [name]: { set } };
@@ -194,9 +154,9 @@ const createTypicalSlice = (
 };
 
 const getHookAndProviderFromSlices = (
-  slices: { [key: string]: any },
-  persist: { [key: string]: boolean } = {},
-  AsyncStorage: any = null
+  slices,
+  persist = {},
+  AsyncStorage = null
 ) => {
   const { useValues, useActions, providers } = Object.entries(slices)
     .map(([name, data]) =>
@@ -204,7 +164,7 @@ const getHookAndProviderFromSlices = (
     )
     .reduce(
       (res, values) => ({
-        useValues: (slice: string) => ({
+        useValues: (slice) => ({
           ...res.useValues(slice),
           ...values.useValues(slice),
         }),
@@ -212,23 +172,22 @@ const getHookAndProviderFromSlices = (
         providers: [...res.providers, values.Provider],
       }),
       {
-        useValues: ((slice: string) => ({})) as (slice: string) => {
-          [key: string]: any;
-        },
-        useActions: (() => ({})) as () => UseActionsResult,
-        providers: [] as ContextProviderType[],
+        useValues: (slice) => ({}),
+        useActions: () => ({}),
+        providers: [],
       }
     );
-  const useSlice = (name: string) => {
+  const useSlice = (name) => {
     const { [name]: value } = useValues(name);
     const {
       [name]: { set },
     } = useActions();
     return [value, set];
   };
+  const Provider = composeProviders(providers);
   return {
     useSlice,
-    Provider: composeProviders(providers),
+    Provider,
   };
 };
 
