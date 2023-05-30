@@ -1,38 +1,51 @@
 # react-context-slices
 
-With this package, manage state through Context is extremely easy, fast and optimal. All you have to do is import a function (`getHookAndProviderFromSlices`) which will get you a hook and a provider. The hook, `useSlice`, it's similar to the `useState` hook, the only difference is that you must pass the name of the slice of Context you want to fetch. And that's all.
+This package allows to manage state through Context in a React or React Native app in an easy, fast and optimal way. You have to import a function (`getHookAndProviderFromSlices`), define the slices of Context you want and this function will get you a hook and a provider. The hook, `useSlice`, acts either as a `useState` hook or a `useReducer` hook, depending on if you defined or not a reducer for the slice.
 
 ## Installation
 
 `npm i react-context-slices`
 
-## How to use it
+## How to use it (javascript)
 
 ```javascript
-//slices.ts
-
+//slices.js
 import getHookAndProviderFromSlices from "react-context-slices";
 
 export const { useSlice, Provider } = getHookAndProviderFromSlices({
-  counter: 0,
-  // rest of slices, for example:
-  // todos: [],
-  // counter2: 0,
-  // etc.
+  count: { initialState: 0 },
+  count2: {
+    initialState: 0,
+    reducer: (state, { type }) => {
+      switch (type) {
+        case "increment":
+          return state + 1;
+        default:
+          return state;
+      }
+    },
+  },
+  // rest of slices
 });
 ```
 
-```typescript
-//app.tsx
-
+```javascript
+//app.jsx
 import { useSlice } from "./slices";
 
 const App = () => {
-  const [count, setCount] = useSlice<number>("counter");
+  const [count, setCount] = useSlice("count");
+  const [count2, dispatchCount2] = useSlice("count2");
   return (
     <>
-      <button onClick={() => setCount((c) => c + 1)}>increment</button>
-      {count}
+      <div>
+        <button onClick={() => setCount((c) => c + 1)}>+</button>
+        {count}
+      </div>
+      <div>
+        <button onClick={() => dispatchCount2({ type: "increment" })}>+</button>
+        {count2}
+      </div>
     </>
   );
 };
@@ -41,8 +54,7 @@ export default App;
 ```
 
 ```javascript
-//index.tsx
-
+//index.jsx
 import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App";
@@ -63,31 +75,24 @@ root.render(
 In case you want to get initial value of a slice from local storage, you do:
 
 ```javascript
-//slices.ts
-
+//slices.js
 import getHookAndProviderFromSlices from "react-context-slices";
 
-export const { useSlice, Provider } = getHookAndProviderFromSlices(
-  {
-    counter: 0,
-    todos: [],
-    counter2: 0,
-    // etc.
-  },
-  { counter: true, counter2: true } // <-- this will get initial value of slice from local storage for slices 'counter' and 'counter2', but not for 'todos' slice.
-);
+export const { useSlice, Provider } = getHookAndProviderFromSlices({
+  counter: { initialState: 0, isGetInitialStateFromStorage: true },
+  // rest of slices
+});
 ```
 
 and then in your component you do:
 
-```typescript
-//app.tsx
-
-import { useSlice } from "./hooks/use-slice";
+```javascript
+//app.jsx
+import { useSlice } from "./slices";
 import { useEffect } from "react";
 
 const App = () => {
-  const [count, setCount] = useSlice<number>("counter");
+  const [count, setCount] = useSlice("counter");
 
   // this persist the value to local storage
   useEffect(() => {
@@ -96,7 +101,7 @@ const App = () => {
 
   return (
     <>
-      <button onClick={() => setCount((c) => c + 1)}>increment</button>
+      <button onClick={() => setCount((c) => c + 1)}>+</button>
       {count}
     </>
   );
@@ -105,43 +110,39 @@ const App = () => {
 export default App;
 ```
 
-For React Native you do the same but pass `AsyncStorage` as a parameter to `getHookAndProviderFromSlices`:
+For React Native you do the same but pass `AsyncStorage` as a second parameter to `getHookAndProviderFromSlices`:
 
 ```javascript
-//slices.ts
-
+//slices.js
 import getHookAndProviderFromSlices from "react-context-slices";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export const { useSlice, Provider } = getHookAndProviderFromSlices(
   {
-    counter: 0,
-    counter2: 0,
-    todos: [],
-    // etc.
+    counter: { initialState: 0, isGetInitialStateFromStorage: true },
+    // rest of slices
   },
-  { counter: true }, // <-- this will get initial value of slice 'counter' from local storage
   AsyncStorage // <-- pass this for React Native
 );
 ```
 
-and in your component you do (for React Native):
+and in your component you must do (for React Native):
 
-```typescript
+```javascript
+// app.jsx
 import React, { useEffect, useRef } from "react";
 import { useSlice } from "./slices";
-import { Button, Text, View, StyleSheet } from "react-native";
+import { Button, Text, View } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const Counter = () => {
-  const isInitialMount = useRef(true);
-  const [count, setCount] = useSlice<number>("counter");
+const App = () => {
+  const isInitialMountRef = useRef(true);
+  const [count, setCount] = useSlice("counter");
 
   useEffect(() => {
     (async () => {
-      if (count !== null && count !== undefined && !isInitialMount.current) {
-        await AsyncStorage.setItem("counter", JSON.stringify(count));
-      }
+      !isInitialMount.current &&
+        (await AsyncStorage.setItem("counter", JSON.stringify(count)));
     })();
   }, [count]);
 
@@ -150,21 +151,75 @@ const Counter = () => {
   }, []);
 
   return (
-    <View style={styles.container}>
-      <Button title="increment" onPress={() => setCount((c) => c + 1)} />
-      <View>
-        <Text>{`counter value is ${count}`}</Text>
-      </View>
+    <View>
+      <Button title="+" onPress={() => setCount((c) => c + 1)} />
+      <Text>{count}</Text>
     </View>
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    paddingTop: 100,
-  },
-});
+export default App;
+```
 
-export default Counter;
+## How to use it (typescript)
+
+```typescript
+// slices.ts
+import getHookAndProviderFromSlices, {
+  defineSlice,
+} from "react-context-slices";
+
+export const { useSlice, Provider } = getHookAndProviderFromSlices({
+  count: defineSlice<number>({
+    initialState: 0,
+  }),
+});
+```
+
+```typescript
+// app.tsx
+import { useSlice } from "./slices";
+
+const App = () => {
+  const [count, setCount] = useSlice<number>("count");
+  return (
+    <>
+      <div>
+        <button onClick={() => setCount((c) => c + 1)}>+</button>
+        {count}
+      </div>
+    </>
+  );
+};
+
+export default App;
+```
+
+## Things you can do
+
+```javascript
+// slices.js
+import getHookAndProviderFromSlices from "react-context-slices";
+
+export const { useSlice, Provider } = getHookAndProviderFromSlices({
+  count: {}, //<-- intialState===undefined
+});
+```
+
+```javascript
+// slices.js
+import getHookAndProviderFromSlices from "react-context-slices";
+
+export const { useSlice, Provider } = getHookAndProviderFromSlices({
+  isLightTheme: { initialState: true, reducer: (state) => !state }, // <-- reducer without action
+});
+```
+
+```javascript
+// slices.js
+import getHookAndProviderFromSlices from "react-context-slices";
+
+export const { useSlice, Provider } = getHookAndProviderFromSlices({
+  greeting: { initialState: "hello", reducer: () => "bye" }, // <-- reducer without state and action
+});
 ```
