@@ -30,7 +30,7 @@ const createSlice = (
 
   if (isGetInitialStateFromStorage && !AsyncStorage) {
     let item;
-    !!(item = localStorage.getItem(name)) &&
+    (item = localStorage.getItem(name)) !== null &&
       (initialState_ = isCustomReducer
         ? JSON.parse(item)
         : { [name]: JSON.parse(item) });
@@ -60,14 +60,14 @@ const createSlice = (
         (async () => {
           let item;
           let updateState;
-          !!(item = await AsyncStorage?.getItem?.(name)) &&
+          (item = await AsyncStorage?.getItem?.(name)) !== null &&
             (updateState = isCustomReducer
               ? JSON.parse(item)
               : { [name]: JSON.parse(item) });
           return updateState;
         })().then(
           (updateState) =>
-            !!updateState &&
+            updateState !== undefined &&
             dispatch({
               type: __SET_INIT_PERSISTED_STATE_RN__,
               payload: updateState,
