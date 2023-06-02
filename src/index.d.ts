@@ -3,7 +3,8 @@ type ContextProviderType = ({
   children,
 }: React.PropsWithChildren) => JSX.Element;
 type Slice<T> = {
-  initialState?: T;
+  initialArg?: any;
+  init?: (intialArg: any) => T;
   reducer?: (state: T, action?: any) => T;
   isGetInitialStateFromStorage?: boolean;
 };

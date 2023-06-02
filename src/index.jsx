@@ -4,10 +4,10 @@ const __SET_INIT_PERSISTED_STATE_RN__ = "__SET_INIT_PERSISTED_STATE_RN__";
 
 const createSlice = (
   reducer,
-  initialState,
+  initialArg,
+  init,
   name,
   getUseActions,
-  isCustomReducer,
   isGetInitialStateFromStorage,
   AsyncStorage
 ) => {
@@ -31,28 +31,19 @@ const createSlice = (
   if (isGetInitialStateFromStorage && !AsyncStorage) {
     let item;
     (item = localStorage.getItem(name)) !== null &&
-      (initialState_ = isCustomReducer
-        ? JSON.parse(item)
-        : { [name]: JSON.parse(item) });
+      (initialState_ = JSON.parse(item));
   }
 
   const Provider = ({ children }) => {
     const reducerWrapper = (reducer) => (state, action) =>
       !!action && action.type === __SET_INIT_PERSISTED_STATE_RN__
-        ? isCustomReducer
-          ? reducer(action.payload, action)
-          : reducer(
-              Object.entries(action.payload).reduce(
-                (res, [key, value]) => ({ ...res, [key]: value }),
-                state
-              ),
-              action
-            )
+        ? reducer(action.payload, action)
         : reducer(state, action);
 
     const [state, dispatch] = React.useReducer(
       !!AsyncStorage ? reducerWrapper(reducer) : reducer,
-      initialState_ !== undefined ? initialState_ : initialState
+      initialState_ !== undefined ? initialState_ : initialArg,
+      initialState_ !== undefined ? undefined : init
     );
 
     React.useEffect(() => {
@@ -61,9 +52,7 @@ const createSlice = (
           let item;
           let updateState;
           (item = await AsyncStorage?.getItem?.(name)) !== null &&
-            (updateState = isCustomReducer
-              ? JSON.parse(item)
-              : { [name]: JSON.parse(item) });
+            (updateState = JSON.parse(item));
           return updateState;
         })().then(
           (updateState) =>
@@ -77,9 +66,7 @@ const createSlice = (
     }, []);
 
     return (
-      <StateContext.Provider
-        value={isCustomReducer ? { [name]: state } : state}
-      >
+      <StateContext.Provider value={{ [name]: state }}>
         <DispatchContext.Provider value={dispatch}>
           {children}
         </DispatchContext.Provider>
@@ -110,32 +97,27 @@ const composeProviders = (providers) => {
 
 const createTypicalSlice = (
   name,
-  data,
-  reducer_,
+  initialArg,
+  reducer,
+  init,
   isGetInitialStateFromStorage,
   AsyncStorage
 ) => {
-  const initialState = !!reducer_
-    ? data
-    : {
-        [name]: data,
-      };
   const SET = "SET";
-  const reducer =
-    reducer_ ??
+  const reducer_ =
+    reducer ??
     ((state, { type, payload }) => {
       switch (type) {
         case SET:
-          return typeof payload === "function"
-            ? { ...state, [name]: payload(state[name]) }
-            : { ...state, [name]: payload };
+          return typeof payload === "function" ? payload(state) : payload;
         default:
           return state;
       }
     });
   const { useValues, useActions, Provider } = createSlice(
-    reducer,
-    initialState,
+    reducer_,
+    initialArg,
+    init,
     name,
     (useDispatch) => () => {
       const dispatch = useDispatch();
@@ -143,9 +125,8 @@ const createTypicalSlice = (
         (value) => dispatch({ type: SET, payload: value }),
         [dispatch]
       );
-      return !!reducer_ ? { [name]: { dispatch } } : { [name]: { set } };
+      return !!reducer ? { [name]: { dispatch } } : { [name]: { set } };
     },
-    !!reducer_,
     isGetInitialStateFromStorage,
     AsyncStorage
   );
@@ -154,14 +135,16 @@ const createTypicalSlice = (
 
 const getHookAndProviderFromSlices = (slices, AsyncStorage) => {
   const { useValues, useActions, providers } = Object.entries(slices)
-    .map(([name, { initialState, reducer, isGetInitialStateFromStorage }]) =>
-      createTypicalSlice(
-        name,
-        initialState,
-        reducer,
-        !!isGetInitialStateFromStorage,
-        AsyncStorage
-      )
+    .map(
+      ([name, { initialArg, reducer, isGetInitialStateFromStorage, init }]) =>
+        createTypicalSlice(
+          name,
+          initialArg,
+          reducer,
+          init,
+          !!isGetInitialStateFromStorage,
+          AsyncStorage
+        )
     )
     .reduce(
       (res, values) => ({
