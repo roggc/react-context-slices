@@ -13,9 +13,9 @@ This package allows to manage state through Context in a React or React Native a
 import getHookAndProviderFromSlices from "react-context-slices";
 
 export const { useSlice, Provider } = getHookAndProviderFromSlices({
-  count: { initialState: 0 },
+  count: { initialArg: 0 },
   count2: {
-    initialState: 0,
+    initialArg: 0,
     reducer: (state, { type }) => {
       switch (type) {
         case "increment":
@@ -79,7 +79,7 @@ In case you want to get initial value of a slice from local storage, you do:
 import getHookAndProviderFromSlices from "react-context-slices";
 
 export const { useSlice, Provider } = getHookAndProviderFromSlices({
-  counter: { initialState: 0, isGetInitialStateFromStorage: true },
+  counter: { initialArg: 0, isGetInitialStateFromStorage: true },
   // rest of slices
 });
 ```
@@ -119,7 +119,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export const { useSlice, Provider } = getHookAndProviderFromSlices(
   {
-    counter: { initialState: 0, isGetInitialStateFromStorage: true },
+    counter: { initialArg: 0, isGetInitialStateFromStorage: true },
     // rest of slices
   },
   AsyncStorage // <-- pass this for React Native
@@ -171,7 +171,7 @@ import getHookAndProviderFromSlices, {
 
 export const { useSlice, Provider } = getHookAndProviderFromSlices({
   count: defineSlice<number>({
-    initialState: 0,
+    initialArg: 0,
   }),
 });
 ```
@@ -202,7 +202,7 @@ export default App;
 import getHookAndProviderFromSlices from "react-context-slices";
 
 export const { useSlice, Provider } = getHookAndProviderFromSlices({
-  count: {}, //<-- intialState===undefined
+  count: {}, //<-- intialArg===undefined
 });
 ```
 
@@ -211,7 +211,7 @@ export const { useSlice, Provider } = getHookAndProviderFromSlices({
 import getHookAndProviderFromSlices from "react-context-slices";
 
 export const { useSlice, Provider } = getHookAndProviderFromSlices({
-  isLightTheme: { initialState: true, reducer: (state) => !state }, // <-- reducer without action
+  isLightTheme: { initialArg: true, reducer: (state) => !state }, // <-- reducer without action
 });
 ```
 
@@ -220,6 +220,10 @@ export const { useSlice, Provider } = getHookAndProviderFromSlices({
 import getHookAndProviderFromSlices from "react-context-slices";
 
 export const { useSlice, Provider } = getHookAndProviderFromSlices({
-  greeting: { initialState: "hello", reducer: () => "bye" }, // <-- reducer without state and action
+  greeting: { initialArg: "hello", reducer: () => "bye" }, // <-- reducer without state and action
 });
 ```
+
+## A note on why "initialArg" nomenclature
+
+To define a slice you must pass an object which its possible keys are `initialArg`, `init`, `reducer` and `isGetInitialStateFromStorage`. The first three of them are exactly the same as the defined in the React docs about `useReducer` hook. Check there the info to know what they do. The last one its name is `isGetInitialStateFromStorage` and not `isGetInitialArgFromStorage` because in this case the `init` function will not be applied (in the case that a value from local storage has been recovered) even when supplied (in the definition of the slice) because what we save in the local storage it's the state value and not `init(initialArg)`, so when we recover it we do not must apply the `init` function and use directly this value as initial state.

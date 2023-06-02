@@ -1,6 +1,6 @@
 {
   "name": "react-context-slices",
-  "version": "5.0.1",
+  "version": "6.0.0",
   "description": "Manage state through Context in an easy, fast, and optimal way.",
   "main": "dist/index.js",
   "scripts": {
@@ -17,7 +17,7 @@
     "hooks",
     "slices"
   ],
-  "author": "roggc -> roger gomez castells",
+  "author": "roger gomez castells (roggc)",
   "license": "ISC",
   "devDependencies": {
     "@types/react": "^18.2.7",
