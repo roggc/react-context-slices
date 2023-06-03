@@ -187,6 +187,25 @@ export const { useSlice, Provider } = getHookAndProviderFromSlices({
 });
 ```
 
+or you can do too:
+
+```typescript
+// slices.ts
+import getHookAndProviderFromSlices, {
+  defineSlice,
+} from "react-context-slices";
+
+export const { useSlice, Provider } = getHookAndProviderFromSlices({
+  count: defineSlice<number>({
+    initialArg: 5, // 'initialArg' must be number in this case
+    init: (initialArg: number) => initialArg * initialArg, // the 'init' function must return number and accept as a parameter a number.
+  }),
+  // rest of slices
+});
+```
+
+Then in your component:
+
 ```typescript
 // app.tsx
 import { useSlice } from "./slices";
