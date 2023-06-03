@@ -41,7 +41,9 @@ const createSlice = (
         : reducer(state, action);
 
     const [state, dispatch] = React.useReducer(
-      !!AsyncStorage ? reducerWrapper(reducer) : reducer,
+      !!AsyncStorage & isGetInitialStateFromStorage
+        ? reducerWrapper(reducer)
+        : reducer,
       initialState_ !== undefined ? initialState_ : initialArg,
       initialState_ !== undefined ? undefined : init
     );
