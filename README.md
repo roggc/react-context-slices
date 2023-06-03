@@ -172,7 +172,7 @@ import getHookAndProviderFromSlices, {
 export const { useSlice, Provider } = getHookAndProviderFromSlices({
   count: defineSlice<number, boolean>({
     initialArg: true, // initialArg must be boolean in this case
-    init: (initialArg: boolean) => 0, // the init function must return number and accept as a parameter a boolean.
+    init: (condition: boolean) => (condition ? 0 : -1), // the init function must return number and accept as a parameter a boolean.
     reducer: (state, { type }) => {
       // 'action' type can be any, 'state' must be number
       switch (type) {
@@ -198,7 +198,7 @@ import getHookAndProviderFromSlices, {
 export const { useSlice, Provider } = getHookAndProviderFromSlices({
   count: defineSlice<number>({
     initialArg: 5, // 'initialArg' must be number in this case
-    init: (initialArg: number) => initialArg * initialArg, // the 'init' function must return number and accept as a parameter a number.
+    init: (value: number) => value * value, // the 'init' function must return number and accept as a parameter a number.
   }),
   // rest of slices
 });
