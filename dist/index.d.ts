@@ -2,7 +2,7 @@ import * as React from "react";
 type ContextProviderType = ({
   children,
 }: React.PropsWithChildren) => JSX.Element;
-type Slice<T, K> = {
+type Slice<T, K = T> = {
   initialArg?: K;
   init?: (intialArg: K) => T;
   reducer?: (state: T, action?: any) => T;
@@ -11,7 +11,7 @@ type Slice<T, K> = {
 type SetValueCallback<T> = (v: T) => T;
 type SetValue<T> = (value: T | SetValueCallback<T>) => void;
 type Dispatch = (action?: any) => void;
-export function defineSlice<T, K>(slice: Slice<T, K>): Slice<T, K>;
+export function defineSlice<T, K = T>(slice: Slice<T, K>): Slice<T, K>;
 declare const getHookAndProviderFromSlices: (
   slices: {
     [slice: string]: Slice<any, any>;
