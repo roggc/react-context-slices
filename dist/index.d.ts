@@ -2,7 +2,7 @@ import * as React from "react";
 type ContextProviderType = ({
   children,
 }: React.PropsWithChildren) => JSX.Element;
-type Slice<T, K = T> = {
+type Slice<T, K> = {
   initialArg?: K;
   init?: (intialArg: K) => T;
   reducer?: (state: T, action?: any) => T;
