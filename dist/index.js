@@ -70,7 +70,7 @@ const createTypicalSlice = (name, initialArg, reducer, init, isGetInitialStateFr
     }, isGetInitialStateFromStorage, AsyncStorage);
     return { useValues, useActions, Provider };
 };
-const getHookAndProviderFromSlices = (slices, AsyncStorage) => {
+const getHookAndProviderFromSlices = (slices, AsyncStorage = null) => {
     const { useValues, useActions, providers } = Object.entries(slices)
         .map(([name, { initialArg, reducer, isGetInitialStateFromStorage, init }]) => createTypicalSlice(name, initialArg, reducer, init, !!isGetInitialStateFromStorage, AsyncStorage))
         .reduce((res, values) => ({
