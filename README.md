@@ -9,7 +9,7 @@ This package allows to manage state through Context in a React or React Native a
 ## How to use it (javascript)
 
 ```javascript
-//slices.js
+// slices.js
 import getHookAndProviderFromSlices from "react-context-slices";
 
 export const { useSlice, Provider } = getHookAndProviderFromSlices({
@@ -30,7 +30,7 @@ export const { useSlice, Provider } = getHookAndProviderFromSlices({
 ```
 
 ```javascript
-//app.jsx
+// app.jsx
 import { useSlice } from "./slices";
 
 const App = () => {
@@ -54,7 +54,7 @@ export default App;
 ```
 
 ```javascript
-//index.jsx
+// index.jsx
 import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App";
@@ -75,7 +75,7 @@ root.render(
 In case you want to get initial value of a slice from local storage, you do:
 
 ```javascript
-//slices.js
+// slices.js
 import getHookAndProviderFromSlices from "react-context-slices";
 
 export const { useSlice, Provider } = getHookAndProviderFromSlices({
@@ -87,7 +87,7 @@ export const { useSlice, Provider } = getHookAndProviderFromSlices({
 and then in your component you do:
 
 ```javascript
-//app.jsx
+// app.jsx
 import { useSlice } from "./slices";
 import { useEffect } from "react";
 
@@ -113,7 +113,7 @@ export default App;
 For React Native you do the same but pass `AsyncStorage` as a second parameter to `getHookAndProviderFromSlices`:
 
 ```javascript
-//slices.js
+// slices.js
 import getHookAndProviderFromSlices from "react-context-slices";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
@@ -159,6 +159,79 @@ const App = () => {
 };
 
 export default App;
+```
+
+You can also pass some middleware if you wish too. You must specify it in the definition of a slice:
+
+```javascript
+// slices.js
+import getHookAndProviderFromSlices from "react-context-slices";
+
+export const { useSlice, Provider } = getHookAndProviderFromSlices({
+  todos: {
+    initialArg: [],
+    reducer: (state, action) => {
+      switch (action.type) {
+        case "FETCH_TODOS_REQUEST":
+          return state;
+        case "FETCH_TODOS_SUCCESS":
+          return action.payload;
+        case "FETCH_TODOS_FAILURE":
+          return state;
+        default:
+          return state;
+      }
+    },
+    middleware: [
+      () => (next) => (action) => {
+        // <-- logger middleware (first middleware applied)
+        console.log("dispathing action:", action);
+        return next(action);
+      },
+      (dispatch) => (next) => (action) => {
+        // <-- async middleware (second middleware applied)
+        if (typeof action === "function") {
+          return action(dispatch);
+        }
+        return next(action);
+      },
+    ],
+  },
+  // rest of slices
+});
+```
+
+Then you can write your action creator like:
+
+```javascript
+const fetchTodos = () => async (dispatch) => {
+  dispatch({ type: "FETCH_TODOS_REQUEST" });
+  try {
+    const response = await fetch("https://api.example.com/todos");
+    const todos = await response.json();
+    dispatch({ type: "FETCH_TODOS_SUCCESS", payload: todos });
+  } catch (error) {
+    dispatch({ type: "FETCH_TODOS_FAILURE", payload: error.message });
+  }
+};
+```
+
+and then call it in your component with:
+
+```javascript
+// todos.jsx
+import { useSlice } from "./slices";
+import { useEffect } from "react";
+
+const Todos = () => {
+  const [todos, dispatchTodos] = useSlice("todos");
+  useEffect(() => {
+    dispatchTodos(fetchTodos());
+  }, [dispatchTodos]);
+  return {todos.map(/* ... */)};
+};
+
+export default Todos;
 ```
 
 ## How to use it (typescript)
@@ -270,4 +343,4 @@ export const { useSlice, Provider } = getHookAndProviderFromSlices({
 
 ## A note on why "initialArg" nomenclature
 
-To define a slice you must pass an object which its possible keys (all optional) are `initialArg`, `init`, `reducer` and `isGetInitialStateFromStorage`. The first three of them are exactly the same as the defined in the React docs about `useReducer` hook. Check there the info to know what they do. The last one its name is `isGetInitialStateFromStorage` and not `isGetInitialArgFromStorage` because in this case the `init` function will not be applied (in the case that a value from local storage has been recovered) even when supplied (in the definition of the slice) because what we save in the local storage it's the state value and not `initialArg`, so when we recover it we do not must apply the `init` function and use directly this value as initial state.
+To define a slice you must pass an object which its possible keys (all optional) are `initialArg`, `init`, `reducer`, `isGetInitialStateFromStorage` and `middleware`. The first three of them are exactly the same as the defined in the React docs about `useReducer` hook. Check there the info to know what they do. The `isGetInitialStateFromStorage` its name is not `isGetInitialArgFromStorage` because in this case the `init` function will not be applied (in the case that a value from local storage has been recovered) even when supplied in the definition of the slice because what we save in the local storage it's the state value and not `initialArg`, so when we recover it we do not must apply the `init` function and use directly this value as initial state.
