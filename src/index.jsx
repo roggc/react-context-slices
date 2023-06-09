@@ -180,7 +180,7 @@ const getHookAndProviderFromSlices = (slices, AsyncStorage = null) => {
   const useSlice = (name) => {
     const { [name]: value } = useValues(name);
     const { [name]: actions } = useActions();
-    return [value, !!slices[name]?.reducer ? actions.dispatch : actions.set];
+    return [value, !!slices[name]?.reducer ? actions.dispatch : actions?.set];
   };
   const Provider = composeProviders(providers);
   return {
