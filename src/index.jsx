@@ -49,14 +49,10 @@ const createSlice = (
       initialState_ !== undefined ? undefined : init
     );
 
-    const enhancedDispatch = React.useMemo(
-      () =>
-        middleware
-          .map((middleware) => middleware((action) => enhancedDispatch(action)))
-          .reduceRight(
-            (dispatch, middleware) => middleware(dispatch),
-            dispatch
-          ),
+    const enhancedDispatch = React.useCallback(
+      middleware
+        .map((middleware) => middleware((action) => enhancedDispatch(action)))
+        .reduceRight((dispatch, middleware) => middleware(dispatch), dispatch),
       [dispatch]
     );
 
