@@ -186,14 +186,14 @@ export const { useSlice, Provider } = getHookAndProviderFromSlices({
       () => (next) => (action) => {
         // <-- logger middleware (first middleware applied)
         console.log("dispathing action:", action);
-        return next(action);
+        next(action);
       },
       (dispatch) => (next) => (action) => {
         // <-- async middleware (second middleware applied)
         if (typeof action === "function") {
           return action(dispatch);
         }
-        return next(action);
+        next(action);
       },
     ],
   },

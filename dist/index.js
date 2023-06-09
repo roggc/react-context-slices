@@ -23,7 +23,7 @@ const createSlice = (reducer, initialArg, init, name, getUseActions, isGetInitia
         const [state, dispatch] = React.useReducer(!!AsyncStorage & isGetInitialStateFromStorage
             ? reducerWrapper(reducer)
             : reducer, initialState_ !== undefined ? initialState_ : initialArg, initialState_ !== undefined ? undefined : init);
-        const enhancedDispatch = React.useMemo(() => middleware
+        const enhancedDispatch = React.useCallback(middleware
             .map((middleware) => middleware((action) => enhancedDispatch(action)))
             .reduceRight((dispatch, middleware) => middleware(dispatch), dispatch), [dispatch]);
         React.useEffect(() => {
