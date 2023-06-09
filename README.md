@@ -306,7 +306,7 @@ export default App;
 import getHookAndProviderFromSlices from "react-context-slices";
 
 export const { useSlice, Provider } = getHookAndProviderFromSlices({
-  count: {}, //<-- intialArg === undefined
+  count: {}, // <-- intialArg === undefined
   // rest of slices
 });
 ```
@@ -336,9 +336,21 @@ export const { useSlice, Provider } = getHookAndProviderFromSlices({
 import getHookAndProviderFromSlices from "react-context-slices";
 
 export const { useSlice, Provider } = getHookAndProviderFromSlices({
-  greeting: { init: () => "hello" }, // <-- pass an 'init' function instead of an 'initialArg'
+  greeting: { init: () => "hello" }, // <-- pass an 'init' function without an 'initialArg'
   // rest of slices
 });
+```
+
+```javascript
+// app.jsx
+import { useSlice } from "./slices";
+
+const App = () => {
+  const [foo, setFoo] = useSlice(""); // 'foo' and 'setFoo' will be undefined. If you pass an empty string or a slice name that has not been defined (doesn't exist), it returns undefined for both 'value' and 'setValue'
+  return null;
+};
+
+export default App;
 ```
 
 ## A note on why "initialArg" nomenclature
