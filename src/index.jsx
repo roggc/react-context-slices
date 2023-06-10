@@ -145,7 +145,7 @@ const createTypicalSlice = (
   return { useValues, useActions, Provider };
 };
 
-const getHookAndProviderFromSlices = (slices, AsyncStorage = null) => {
+const getHookAndProviderFromSlices = (slices = {}, AsyncStorage = null) => {
   const { useValues, useActions, providers } = Object.entries(slices)
     .map(
       ([
