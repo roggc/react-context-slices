@@ -361,21 +361,286 @@ To define a slice you must pass an object which its possible keys (all optional)
 
 The library exports two functions: `getHookAndProviderFromSlices` and `defineSlice`. The first one is the main one and it's a default export. The second one it's only used in typescript.
 
-| Name                                            | Type                                                                  | Description                                                                                                                                                                                                                               | Example                                                                                                           |
-| ----------------------------------------------- | --------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
-| `getHookAndProviderFromSlices` (default import) | (slices?: slices object, AsyncStorage?) => ({`useSlice`, `Provider`}) | It is the main (and default) function exported by the library. You pass in an object containing the definition of the slices and you get a hook and a provider. For React Native you should pass the `AsyncStorage` as a second argument. | `export const {useSlice, Provider} = getHookAndProviderFromSlices({count: {initialArg: 0}})`                      |
-| `defineSlice` (used in typescript)              | \<T, K\>(slice: a slice object) => slice                              | This function is the other function exported by the library. It's intended to use with typescript. It enforces rules for types in the definition of a slice object. It's a generic function.                                              | `export const {useSlice, Provider} = getHookAndProviderFromSlices({count: defineSlice<number>({initialArg: 0})})` |
+<table><tr><td>Name</td>                                           <td>Type</td>                                                                   <tdDescription</td>                                                                                                                                                                                                                                <td>Example</td></tr><tr>
+<td>
+
+`getHookAndProviderFromSlices` (default import)
+
+</td>  <td>
+
+```typescript
+(slices?: Slice<T, K>, AsyncStorage?: any) => ({
+  useSlice: <T>(slice: string) => [T, SetValue<T> & Dispatch];
+  Provider:({children}: React.PropsWithChildren) => JSX.Element;
+})
+```
+
+</td> <td>
+
+It is the main (and default) function exported by the library. You pass in an object containing the definition of the slices and you get a hook and a provider. For React Native you should pass the `AsyncStorage` as a second argument.
+
+</td> <td>
+
+```javascript
+export const { useSlice, Provider } = getHookAndProviderFromSlices({
+  count: { initialArg: 0 },
+});
+```
+
+</td></tr><tr>                     
+<td>
+
+`defineSlice` (used in typescript)
+
+</td>              <td>
+
+```typescript
+<T, K>(slice: Slice<T, K>) => Slice<T, K>;
+```
+
+</td>                              <td>
+
+This function is the other function exported by the library. It's intended to use with typescript. It enforces rules for types in the definition of a slice object. It's a generic function.
+
+</td>                                              <td>
+
+```typescript
+export const { useSlice, Provider } = getHookAndProviderFromSlices({
+  count: defineSlice<number>({ initialArg: 0 }),
+});
+```
+
+</td></tr></table>
 
 Next are described other entities encountered when using this library:
 
-| Name                           | Type                                                                                                                                                                                                                             | Description                                                                                                                                                                                                                                                                                                                                                            | Example                                                                                                                                                                                                         |
-| ------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| slices object                  | {[name:string]: (a slice object)}                                                                                                                                                                                                | The slices object is an object which its keys are the name of the slices and its values are the slices themselves. Is the object passed as a first parameter to default exported function `getHookAndProviderFromSlices`. Each slice is an object with the following optional keys: `initialArg`, `init`, `reducer`, `isGetInitialStateFromStorage`, and `middleware`. | `{count: {initialArg: 0}, todos: {initialArg: []}}`                                                                                                                                                             |
-| a slice object                 | {`initialArg`?: K \| T; `init`?: (initialArg: K) => T; `reducer`?: (state: T, action: any) => T; `isGetInitialStateFromStorage`?: boolean; `middleware`?: ((dispatch: Dispatch) => (next: Dispatch) => (action: any) => any)[];} | A slice object is an object which its possible keys are (all optional): `initialArg`, `init`, `reducer`, `isGetInitialStateFromStorage`, and `middleware`.                                                                                                                                                                                                             | `{initialArg: false, init: (condition) => condition ? 0 : -1}`                                                                                                                                                  |
-| `initialArg`                   | K \| T                                                                                                                                                                                                                           | It's the argument passed to the `init` function to compute the initial state. If no `init` function is present in the definition of the slice, then it becomes the initial state.                                                                                                                                                                                      | `{initialArg: 0}`                                                                                                                                                                                               |
-| `init`                         | (initialArg: K) => T                                                                                                                                                                                                             | It's the function used to compute initial state of the slice. It takes `initialArg` as an argument. If no present then `initialArg` it's the initial state.                                                                                                                                                                                                            | `{init: () => 0}`                                                                                                                                                                                               |
-| `reducer`                      | (state: T, action: any) => T                                                                                                                                                                                                     | If a reducer is supplied in the definition of a slice, then the `useSlice`, when used with this slice, will return a dispatch function as a second value in the array. It is not defined, then the `useSlice` hook will return, for this slice, a setter function as a second value in the array.                                                                      | `{reducer: (state)=>!state}`                                                                                                                                                                                    |
-| `isGetInitialStateFromStorage` | boolean                                                                                                                                                                                                                          | Indicates whether the initial state for the slice will be recovered from local storage (web) or Async Storage (React Native)                                                                                                                                                                                                                                           | `{isGetInitialStateFromStorage: true}`                                                                                                                                                                          |
-| `middleware`                   | ((dispatch: Dispatch) => (next: Dispatch) => (action: any) => any)[]                                                                                                                                                             | It's an array where the middleware for the dispatch function is passed. The first middleware applied will be the first on the array, the second the next, etc, ending with the dispatch function itself.                                                                                                                                                               | `{middleware: [() => (next) => (action) => {console.log('I am a middleware'); next(action);}, (dispatch) => (next) => (action) => {if(typeof action === "function"){return action(dispatch);} next(action);}]}` |
-| `useSlice`                     | \<T\>(slice: string) => [T, SetValue\<T\> & Dispatch]                                                                                                                                                                            | It's the hook returned by the call to `getHookAndProviderFromSlices`. When used, you must pass the name of the slice you want to fetch or use. It will return an array where the first value is the state and the second a dispatch or setter function, depending on if a reducer was defined or not for the slice.                                                    | `const [count, setCount] = useSlice("count");`                                                                                                                                                                  |
-| `Provider`                     | ({children}: React.PropsWithChildren) => JSX.Element                                                                                                                                                                             | It's the provider returned by the call to `getHookAndProviderFromSlices`. It must be used up in the tree, in order for the hook `useSlice` to work.                                                                                                                                                                                                                    | `root.render(<Provider><App /></Provider>)`                                                                                                                                                                     |
+<table><tr><td>Name</td>                       <td>Type</td>                                                                                                                                                                                                                              <td>Description</td>                                                                                                                                                                                                                                                                                                                                                     <td>Example</td>                                                                                                                                                                                                         </tr>
+<tr><td>
+
+slices object
+
+</td>                   <td>
+
+```typescript
+{
+  [name:string]: Slice<T, K>;
+}
+```
+
+</td>                                                                                                                                                                                                 <td>
+
+The slices object is an object which its keys are the name of the slices and its values are the slices themselves. Is the object passed as a first parameter to default exported function `getHookAndProviderFromSlices`. Each slice is an object with the following optional keys: `initialArg`, `init`, `reducer`, `isGetInitialStateFromStorage`, and `middleware`.
+
+</td>  <td>
+
+```javascript
+{
+  count: {initialArg: 0},
+  todos: {initialArg: []}
+}
+```
+
+</td></tr><tr>                                                                                                                                                             
+<td>
+
+a slice object
+
+</td>                 <td>
+
+```typescript
+{
+  initialArg?: K | T;
+  init?: (initialArg: K) => T;
+  reducer?: (state: T, action: any) => T;
+  isGetInitialStateFromStorage?: boolean;
+  middleware?: ((dispatch: Dispatch) => (next: Dispatch) => (action: any) => any)[];
+}
+```
+
+</td>
+ <td>
+ 
+ A slice object is an object which its possible keys are (all optional): `initialArg`, `init`, `reducer`, `isGetInitialStateFromStorage`, and `middleware`.
+ 
+ </td>                                                                                                                                                                                                             <td>
+ 
+```javascript
+{
+  initialArg: false, 
+  init: (condition) => condition ? 0 : -1
+}
+```
+ 
+ </td></tr><tr>                                                                                                                                                  
+<td>
+
+`initialArg`
+
+</td>                   <td>
+
+```typescript
+K | T;
+```
+
+</td>                                                                                                                                                                                                                           <td>
+
+It's the argument passed to the `init` function to compute the initial state. If no `init` function is present in the definition of the slice, then it becomes the initial state.
+
+</td>                                                                                                                                                                                       <td>
+
+```javascript
+{
+  initialArg: 0;
+}
+```
+
+</td>                                                                                                                                                                                               
+</tr><tr><td>
+
+`init`
+
+</td>                         <td>
+
+```typescript
+(initialArg: K) => T;
+```
+
+</td>                                                                                                                                                                                                             <td>
+
+It's the function used to compute initial state of the slice. It takes `initialArg` as an argument. If no present then `initialArg` it's the initial state.
+
+</td>                                                                                                                                                                                                            <td>
+
+```javascript
+{
+  init: () => 0;
+}
+```
+
+</td></tr><tr>                                                                                                                                                                                               
+<td>
+
+`reducer`
+
+</td>                      <td>
+
+```typescript
+(state: T, action: any) => T;
+```
+
+</td>                                                                                                                                                                                                     <td>
+
+If a reducer is supplied in the definition of a slice, then the `useSlice`, when used with this slice, will return a dispatch function as a second value in the array. It is not defined, then the `useSlice` hook will return, for this slice, a setter function as a second value in the array.
+
+</td>                                                                      <td>
+
+```javascript
+{
+  reducer: (state) => !state;
+}
+```
+
+</td></tr><tr>                                                                                                                                                                                    
+<td>
+
+`isGetInitialStateFromStorage`
+
+</td>  <td>
+
+```typescript
+boolean;
+```
+
+</td>                                                                                                                                                                                                                          <td>
+
+Indicates whether the initial state for the slice will be recovered from local storage (web) or Async Storage (React Native)
+
+</td>                                                                                                                                                                                                                                           <td>
+
+```javascript
+{
+  isGetInitialStateFromStorage: true;
+}
+```
+
+</td></tr><tr>                                                                                                                                                                          
+<td>
+
+`middleware`
+
+</td>                   <td>
+
+```typescript
+((dispatch: Dispatch) => (next: Dispatch) => (action: any) => any)[]
+```
+
+</td>                                                                                                                                                             <td>
+
+It's an array where the middleware for the dispatch function is passed. The first middleware applied will be the first on the array, the second the next, etc, ending with the dispatch function itself.
+
+</td>                                                                                                                                                               <td>
+
+```javascript
+{
+  middleware: [
+    () => (next) => (action) => {
+      console.log("I am a middleware");
+      next(action);
+    },
+    (dispatch) => (next) => (action) => {
+      if (typeof action === "function") {
+        return action(dispatch);
+      }
+      next(action);
+    },
+  ];
+}
+```
+
+</td></tr><tr>
+<td>
+
+`useSlice`
+
+</td>                     <td>
+
+```typescript
+<T>(slice: string) => [T, SetValue<T> & Dispatch];
+```
+
+</td>                                                                                                                                                                            <td>
+
+It's the hook returned by the call to `getHookAndProviderFromSlices`. When used, you must pass the name of the slice you want to fetch or use. It will return an array where the first value is the state and the second a dispatch or setter function, depending on if a reducer was defined or not for the slice.
+
+</td>                                                    <td>
+
+```javascript
+const [count, setCount] = useSlice("count");
+```
+
+</td></tr><tr>                                                                                                                                                                  
+<td>
+
+`Provider`
+
+</td>                     <td>
+
+```typescript
+({ children }: React.PropsWithChildren) => JSX.Element;
+```
+
+</td>                                                                                                                                                                             <td>
+
+It's the provider returned by the call to `getHookAndProviderFromSlices`. It must be used up in the tree, in order for the hook `useSlice` to work.
+
+</td>                                                                                                                                                                                                                    <td>
+
+```javascript
+root.render(
+  <Provider>
+    <App />
+  </Provider>
+);
+```
+
+</td></tr></table>
