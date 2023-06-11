@@ -376,9 +376,11 @@ table:nth-of-type(1) th:nth-of-type(1) {
 }
 table:nth-of-type(1) th:nth-of-type(2) {
     width:30%;
+    min-width:30%;
 }
 table:nth-of-type(1) th:nth-of-type(3) {
     width:30%;
+    min-width:30%;
 }
 table:nth-of-type(1) th:nth-of-type(4) {
     width:30%;
