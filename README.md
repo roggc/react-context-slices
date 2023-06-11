@@ -366,11 +366,26 @@ export default App;
 
 To define a slice you must pass an object which its possible keys (all optional) are `initialArg`, `init`, `reducer`, `isGetInitialStateFromStorage` and `middleware`. The first three of them are exactly the same as the defined in the React docs about `useReducer` hook. Check there the info to know what they do. The `isGetInitialStateFromStorage` its name is not `isGetInitialArgFromStorage` because in this case the `init` function will not be applied (in the case that a value from local storage has been recovered) even when supplied in the definition of the slice because what we save in the local storage it's the state value and not `initialArg`, so when we recover it we do not must apply the `init` function and use directly this value as initial state.
 
+<style>
+table.api-reference th:first-of-type {
+    width: 10%;
+}
+table.api-reference th:nth-of-type(2) {
+    width: 30%;
+}
+table.api-reference th:nth-of-type(3) {
+    width: 30%;
+}
+table.api-reference th:nth-of-type(4) {
+    width: 30%;
+}
+</style>
+
 ## API Reference
 
 The library exports two functions: `getHookAndProviderFromSlices` and `defineSlice`. The first one is the main one and it's a default export. The second one it's only used in typescript.
 
-<table><tr><td>Name</td>                                           <td>Type</td>                                                                   <td>Description</td>                                                                                                                                                                                                                                <td>Example</td></tr><tr>
+<table class="api-reference"><tr><th>Name</th>                                           <th>Type</th>                                                                   <th>Description</th>                                                                                                                                                                                                                                <th>Example</th></tr><tr>
 <td>
 
 `getHookAndProviderFromSlices` (default import)
@@ -423,7 +438,7 @@ export const { useSlice, Provider } = getHookAndProviderFromSlices({
 
 Next are described other entities encountered when using this library:
 
-<table><tr><td>Name</td>                       <td>Type</td>                                                                                                                                                                                                                              <td>Description</td>                                                                                                                                                                                                                                                                                                                                                     <td>Example</td>                                                                                                                                                                                                         </tr>
+<table><tr><th>Name</th>                       <th>Type</th>                                                                                                                                                                                                                              <th>Description</th>                                                                                                                                                                                                                                                                                                                                                     <th>Example</th>                                                                                                                                                                                                         </tr>
 <tr><td>
 
 slices object
