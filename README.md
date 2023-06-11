@@ -9,7 +9,8 @@ This package provides a simple and efficient way to manage state through Context
 [How to use it (typescript)](#how-to-use-it-typescript)  
 [Things you can do](#things-you-can-do)  
 [A note on why "initialArg" nomenclature](#a-note-on-why-initialarg-nomenclature)  
-[API Reference](#api-reference)
+[API Reference](#api-reference)  
+[License](#license)
 
 ## Installation
 
@@ -653,3 +654,9 @@ root.render(
 ```
 
 </td></tr></table>
+
+## License
+
+Licensed under the ISC License, Copyright © 2022-present Roger Gomez Castells.
+
+See [LICENSE](./LICENSE) for more information.
