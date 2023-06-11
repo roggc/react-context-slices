@@ -2,6 +2,15 @@
 
 This package allows to manage state through Context in a React or React Native app in an easy, fast and optimal way. You have to import a function (`getHookAndProviderFromSlices`), define the slices of Context you want and this function will get you a hook and a provider. The hook, `useSlice`, acts either as a `useState` hook or a `useReducer` hook, depending on if you defined or not a reducer for the slice.
 
+## Table of Contents
+
+[Installation](#installation)  
+[How to use it (javascript)](#how-to-use-it-javascript)  
+[How to use it (typescript)](#how-to-use-it-typescript)  
+[Things you can do](#things-you-can-do)  
+[A note on why "initialArg" nomenclature](#a-note-on-why-initialarg-nomenclature)  
+[API Reference](#api-reference)
+
 ## Installation
 
 `npm i react-context-slices`
