@@ -367,17 +367,21 @@ export default App;
 To define a slice you must pass an object which its possible keys (all optional) are `initialArg`, `init`, `reducer`, `isGetInitialStateFromStorage` and `middleware`. The first three of them are exactly the same as the defined in the React docs about `useReducer` hook. Check there the info to know what they do. The `isGetInitialStateFromStorage` its name is not `isGetInitialArgFromStorage` because in this case the `init` function will not be applied (in the case that a value from local storage has been recovered) even when supplied in the definition of the slice because what we save in the local storage it's the state value and not `initialArg`, so when we recover it we do not must apply the `init` function and use directly this value as initial state.
 
 <style>
-table.api-reference .name {
+.name {
     min-width: 10%;
+    max-width:10%;
 }
-table.api-reference .type {
+.type {
     min-width: 30%;
+    max-width:30%;
 }
-table.api-reference .description {
+.description {
     min-width: 30%;
+    max-width:30%;
 }
-table.api-reference .example {
+.example {
     min-width: 30%;
+    max-width:30%;
 }
 </style>
 
