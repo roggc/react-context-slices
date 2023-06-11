@@ -368,16 +368,16 @@ To define a slice you must pass an object which its possible keys (all optional)
 
 <style>
 table.api-reference th:first-of-type {
-    width: 10%;
+    min-width: 10%;
 }
 table.api-reference th:nth-of-type(2) {
-    width: 30%;
+    min-width: 30%;
 }
 table.api-reference th:nth-of-type(3) {
-    width: 30%;
+    min-width: 30%;
 }
 table.api-reference th:nth-of-type(4) {
-    width: 30%;
+    min-width: 30%;
 }
 </style>
 
