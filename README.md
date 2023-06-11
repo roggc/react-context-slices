@@ -370,7 +370,7 @@ To define a slice you must pass an object which its possible keys (all optional)
 
 The library exports two functions: `getHookAndProviderFromSlices` and `defineSlice`. The first one is the main one and it's a default export. The second one it's only used in typescript.
 
-<table><tr><td>Name</td>                                           <td>Type</td>                                                                   <td>Description</td>                                                                                                                                                                                                                                <td>Example</td></tr><tr>
+<table><tr><th>Name</th>                                           <th>Type</th>                                                                   <th>Description</th>                                                                                                                                                                                                                                <th>Example</th></tr><tr>
 <td>
 
 `getHookAndProviderFromSlices` (default import)
@@ -423,7 +423,7 @@ export const { useSlice, Provider } = getHookAndProviderFromSlices({
 
 Next are described other entities encountered when using this library:
 
-<table><tr><td>Name</td>                       <td>Type</td>                                                                                                                                                                                                                              <td>Description</td>                                                                                                                                                                                                                                                                                                                                                     <td>Example</td>                                                                                                                                                                                                         </tr>
+<table><tr><th>Name</th>                       <th>Type</th>                                                                                                                                                                                                                              <th>Description</th>                                                                                                                                                                                                                                                                                                                                                     <th>Example</th>                                                                                                                                                                                                         </tr>
 <tr><td>
 
 slices object
