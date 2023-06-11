@@ -2,7 +2,9 @@ import * as React from "react";
 const __SET_INIT_PERSISTED_STATE_RN__ = "__SET_INIT_PERSISTED_STATE_RN__";
 const createSlice = (reducer, initialArg, init, name, getUseActions, isGetInitialStateFromStorage, AsyncStorage, middleware = []) => {
     const StateContext = React.createContext({});
-    const DispatchContext = React.createContext(() => { });
+    const DispatchContext = React.createContext(() => {
+        console?.log("You must use the Provider up in the tree");
+    });
     const useStateContext = (slice) => React.useContext(slice === name ? StateContext : {});
     const useDispatchContext = () => React.useContext(DispatchContext);
     const useValues = (slice) => {

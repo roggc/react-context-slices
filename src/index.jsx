@@ -13,7 +13,9 @@ const createSlice = (
   middleware = []
 ) => {
   const StateContext = React.createContext({});
-  const DispatchContext = React.createContext(() => {});
+  const DispatchContext = React.createContext(() => {
+    console?.log("You must use the Provider up in the tree");
+  });
 
   const useStateContext = (slice) =>
     React.useContext(slice === name ? StateContext : {});
