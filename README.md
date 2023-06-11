@@ -368,7 +368,6 @@ To define a slice you must pass an object which its possible keys (all optional)
 
 <style>
   table:nth-of-type(1) {
-    display:table;
     width:100%;
 }
 table:nth-of-type(1) th:nth-of-type(1) {
@@ -380,7 +379,7 @@ table:nth-of-type(1) th:nth-of-type(2) {
 }
 table:nth-of-type(1) th:nth-of-type(3) {
     width:30%;
-    min-width:30%;
+    min-width:200px;
 }
 table:nth-of-type(1) th:nth-of-type(4) {
     width:30%;
