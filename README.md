@@ -1,16 +1,13 @@
 # react-context-slices
 
-`react-context-slices` is a utility library that provides an intuitive and efficient way to manage state through Context in your React or React Native applications. With `react-context-slices`, you can create as many slices of Context as you want, each defining a specific part of your state. This allows for a modular and organized approach to state management.
+`react-context-slices` is a utility library that simplifies state management in React and React Native applications. It features a unique function called `getHookAndProviderFromSlices`, which allows you to define state slices with zero boilerplate. This function provides a hook, the `useSlice` hook, and a provider. The `useSlice` hook is akin to the `useState` or `useReducer` hooks, depending on whether you have defined a reducer for the slice. It grants access to the state value of a slice and a setter or dispatch function.
 
-By importing the `getHookAndProviderFromSlices` function and defining your desired slices of Context, you can obtain a hook called `useSlice` and a provider. The `useSlice` hook acts similarly to the familiar `useState` or `useReducer` hooks, depending on whether you have defined a reducer for the slice. It provides you with the value of the state for the slice you want, as well as a setter or dispatch function.
+In addition to its core functionality, `react-context-slices` offers the following capabilities:
 
-One of the standout features of `react-context-slices` is its ability to retrieve the initial state from storage. This means that you can easily persist and restore state across browsing sessions (in the case of web applications) or app reloads (in the case of React Native applications). Please note that the initial state from storage feature retrieves the state from local storage for web applications and from async storage for React Native applications.
+- Retrieve the initial state of a slice from local storage (for web) or async storage (for React Native).
+- Define middleware within a slice to intercept and customize the workflow of dispatching actions. This allows you to perform tasks such as making API calls, implementing logging capabilities, and handling other side effects. The middleware does not have access to the state.
 
-Additionally, `react-context-slices` offers the ability to integrate middleware into your state management flow. Middleware functions allow you to intercept actions dispatched by components and perform side effects or implement additional logic before they reach the reducers. This provides a powerful mechanism for extending the behavior of your state management and enhancing the overall functionality of your application. Middleware can be used for tasks such as logging, making asynchronous API calls, modifying actions, or handling complex side effects. By leveraging middleware, you can customize and enhance the state management process in React and React Native applications, enabling you to create more robust and feature-rich solutions.
-
-Please note that middleware in `react-context-slices` does not have direct access to the state itself. If you need to conditionally dispatch actions based on the current state, it's recommended to handle such logic within your components or handle it separately outside of the middleware.
-
-With its intuitive API and feature-rich functionality, `react-context-slices` empowers you to efficiently manage state in React and React Native applications. Its modular approach to state management, support for retrieving initial state from storage, and the ability to integrate middleware for advanced customization make it a valuable tool for projects of any size.
+In summary, `react-context-slices` offers an intuitive API and powerful features, all without any boilerplate, making it a suitable and efficient solution for state management in React and React Native applications.
 
 ## Table of Contents
 
@@ -161,13 +158,13 @@ const App = () => {
 
   useEffect(() => {
     (async () => {
-      !isInitialMount.current &&
+      !isInitialMountRef.current &&
         (await AsyncStorage.setItem("counter", JSON.stringify(count)));
     })();
   }, [count]);
 
   useEffect(() => {
-    isInitialMount.current = false;
+    isInitialMountRef.current = false;
   }, []);
 
   return (
