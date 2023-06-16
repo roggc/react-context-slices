@@ -1,7 +1,7 @@
 {
   "name": "react-context-slices",
   "version": "8.0.6",
-  "description": "Manage state through Context in an easy, fast, and optimal way.",
+  "description": "Manage global state like local state in React and React Native!",
   "main": "dist/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -13,7 +13,9 @@
   "keywords": [
     "react",
     "context",
+    "global",
     "state",
+    "management",
     "hooks",
     "slices"
   ],
