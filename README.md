@@ -1,13 +1,10 @@
 # react-context-slices
 
-`react-context-slices` is a utility library that simplifies state management in React and React Native applications. It features a unique function called `getHookAndProviderFromSlices`, which allows you to define state slices with zero boilerplate. This function provides a hook, the `useSlice` hook, and a provider. The `useSlice` hook is akin to the `useState` or `useReducer` hooks, depending on whether you have defined a reducer for the slice. It grants access to the state value of a slice and a setter or dispatch function.
+Yes, it is indeed possible to define and use **global state** in a similar way to **local state**, and **`react-context-slices`** allows you to achieve this with **zero boilerplate** and **pure React**. By using the **`getHookAndProviderFromSlices`** function, you can define state slices and obtain a hook called **`useSlice`**, as well as a **provider**. The **`useSlice`** hook acts similarly to the **`useState`** or **`useReducer`** hooks, depending on whether you have defined a reducer for the slice. It provides you with access to the state values for the slice, as well as setter or dispatch functions.
 
-In addition to its core functionality, `react-context-slices` offers the following capabilities:
+In addition to this core functionality, **`react-context-slices`** offers the ability to retrieve the **initial state** for a slice **from storage**, whether it be local storage for web applications or async storage for React Native applications. This allows you to easily persist and restore state across browsing sessions or app reloads. Furthermore, **`react-context-slices`** supports the integration of **middleware**, which enables you to customize the workflow of dispatching actions. You can use middleware for tasks such as making API calls, implementing logging capabilities, and handling other side effects. It's important to note that middleware does not have direct access to the state itself.
 
-- Retrieve the initial state of a slice from local storage (for web) or async storage (for React Native).
-- Define middleware within a slice to intercept and customize the workflow of dispatching actions. This allows you to perform tasks such as making API calls, implementing logging capabilities, and handling other side effects. The middleware does not have access to the state.
-
-In summary, `react-context-slices` offers an intuitive API and powerful features, all without any boilerplate, making it a suitable and efficient solution for state management in React and React Native applications.
+By leveraging **`react-context-slices`**, you can harness the full potential of pure React and efficiently manage global state in your applications. Its intuitive API, zero boilerplate setup, and additional features make it a powerful tool for state management in both React and React Native environments.
 
 ## Table of Contents
 

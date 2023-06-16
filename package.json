@@ -1,6 +1,6 @@
 {
   "name": "react-context-slices",
-  "version": "8.0.5",
+  "version": "8.0.6",
   "description": "Manage state through Context in an easy, fast, and optimal way.",
   "main": "dist/index.js",
   "scripts": {
