@@ -1,10 +1,10 @@
 # react-context-slices
 
-Manage **global state** like **local state** in React and React Native using **`react-context-slices`**. It provides a **zero boilerplate** solution in **pure React**. Use the **`getHookAndProviderFromSlices`** function to define state slices and obtain the **`useSlice`** hook and a **provider**. The **`useSlice`** hook acts similarly to the **`useState`** or **`useReducer`** hooks, giving you access to the state value of a slice and to a setter or dispatch function (depending on whether you defined a reducer for the slice).
+Manage global state like local state in React and React Native: define state slices with **`getHookAndProviderFromSlices`** and then use the **`useSlice`** hook in your components (the **`useSlice`** hook acts either as a **`useState`** or **`useReducer`** hook, depending on whether you defined a reducer for the slice; it gives you access to the slice state value and to a setter or dispatch function).
 
-**`react-context-slices`** enhances its core functionality by allowing you to retrieve the initial state of a slice from **storage** (local for web or async for React Native) and customize action workflows using **middleware**. Storing the initial state enables easy persistence and restoration of state across sessions or reloads. The middleware feature is useful for tasks such as API calls, logging, and side effect handling, all without direct access to the state itself.
+Get initial state of a slice from **storage** (local for web or async for React Native) or add **middleware** in a per-slice basis to intercept and customise the workflow of dispatching actions (make API calls, logging or other side effects) without access to the state value.
 
-For all of the above, **`react-context-slices`** is an essential tool for global state management in React and React Native.
+All this with **zero-boilerplate** and **pure React**. Use **`react-context-slices`** for global state management in React and React Native.
 
 ## Table of Contents
 
