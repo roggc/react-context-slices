@@ -1,6 +1,6 @@
 {
   "name": "react-context-slices",
-  "version": "8.0.9",
+  "version": "8.0.10",
   "description": "Manage global state like local state in React and React Native!",
   "main": "dist/index.js",
   "scripts": {
@@ -13,10 +13,7 @@
   "keywords": [
     "react",
     "context",
-    "global",
-    "state",
-    "management",
-    "hooks",
+    "redux",
     "slices"
   ],
   "author": "roger gomez castells (roggc)",
