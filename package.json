@@ -13,10 +13,7 @@
   "keywords": [
     "react",
     "context",
-    "global",
-    "state",
-    "management",
-    "hooks",
+    "redux",
     "slices"
   ],
   "author": "roger gomez castells (roggc)",
