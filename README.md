@@ -4,9 +4,9 @@ Manage global state like local state in React and React Native: define state sli
 
 Get initial state of a slice from **storage** (local for web or async for React Native) or add **middleware** in a per-slice basis to intercept and customise the workflow of dispatching actions (make API calls, logging or other side effects) without access to the state value.
 
-All this with **zero-boilerplate**. If you plan to use **React Context**, use **`react-context-slices`** for global state management in React and React Native.
+All this with **zero-boilerplate**. If you plan to use **React Context**, use **`react-context-slices`**.
 
-**¡¡¡** A Note on **performance**: in **Redux** you can use a selector to select only an element of the array, and the component will re-render only when that element changes, not the array. In **react-context-slices** you can't do that **!!!**
+**¡¡¡** A Note on **performance**: in **Redux** you can use a selector to select only an element of the array, and the component will re-render only when that element changes, not the array. In **react-context-slices** you can't do that. As an alternative, when using react-context-slices, you can memoize the JSX returned in these cases. **!!!**
 
 ## Table of Contents
 
