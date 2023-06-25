@@ -11,7 +11,20 @@ import {
 
 const __SET_INIT_PERSISTED_STATE_RN__ = "__SET_INIT_PERSISTED_STATE_RN__";
 
-const createReduxSliceWrapper = (name, reducers, initialState) => {};
+const createReduxSliceWrapper = (name, reducers, initialState) => {
+  const reduxSlice = {
+    [name]: createReduxSlice({ name, initialState, reducers }),
+  };
+  const useValues = (slice) => ({});
+  const useActions = () => ({});
+  const Provider = ({ children }) => <>{children}</>;
+  return {
+    useValues,
+    useActions,
+    Provider,
+    reduxSlice,
+  };
+};
 
 const createSlice = (
   reducer,
@@ -21,13 +34,9 @@ const createSlice = (
   getUseActions,
   isGetInitialStateFromStorage,
   AsyncStorage,
-  middleware = [],
-  initialState,
-  reducers
+  middleware = []
 ) => {
-  const reduxSlice = !!reducers
-    ? { [name]: createReduxSlice({ name, initialState, reducers }) }
-    : {};
+  const reduxSlice = {};
   const StateContext = React.createContext({});
   const DispatchContext = React.createContext(() => {
     console?.log("You must use the Provider up in the tree");
@@ -131,9 +140,7 @@ const createTypicalSlice = (
   init,
   isGetInitialStateFromStorage,
   AsyncStorage,
-  middleware,
-  initialState,
-  reducers
+  middleware
 ) => {
   const SET = "SET";
   const reducer_ =
@@ -161,9 +168,7 @@ const createTypicalSlice = (
     },
     isGetInitialStateFromStorage,
     AsyncStorage,
-    middleware,
-    initialState,
-    reducers
+    middleware
   );
   return { useValues, useActions, Provider, reduxSlice };
 };
@@ -185,17 +190,17 @@ const getHookAndProviderFromSlices = (slices = {}, AsyncStorage = null) => {
           reducers,
         },
       ]) =>
-        createTypicalSlice(
-          name,
-          initialArg,
-          reducer,
-          init,
-          !!isGetInitialStateFromStorage,
-          AsyncStorage,
-          middleware,
-          initialState,
-          reducers
-        )
+        !!reducers
+          ? createReduxSliceWrapper(name, reducers, initialState)
+          : createTypicalSlice(
+              name,
+              initialArg,
+              reducer,
+              init,
+              !!isGetInitialStateFromStorage,
+              AsyncStorage,
+              middleware
+            )
     )
     .reduce(
       (res, values) => ({
