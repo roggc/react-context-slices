@@ -1,6 +1,6 @@
 {
   "name": "react-context-slices",
-  "version": "8.0.11",
+  "version": "9.0.0",
   "description": "Manage global state like local state in React and React Native!",
   "main": "dist/index.js",
   "scripts": {
@@ -25,5 +25,9 @@
   },
   "peerDependencies": {
     "react": ">=16.8.0"
+  },
+  "dependencies": {
+    "@reduxjs/toolkit": "^1.9.5",
+    "react-redux": "^8.1.1"
   }
 }
