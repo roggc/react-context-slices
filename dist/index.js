@@ -93,7 +93,7 @@ const createTypicalSlice = (name, initialArg, reducer, init, isGetInitialStateFr
     }, isGetInitialStateFromStorage, AsyncStorage, middleware);
     return { useValues, useActions, Provider, reduxSlice };
 };
-const getHookAndProviderFromSlices = (slices = {}, AsyncStorage = null) => {
+const getHookAndProviderFromSlices = ({ slices = {}, AsyncStorage = null, reduxStoreOptions = {}, }) => {
     const { useValues, useActions, providers, reduxSlices } = Object.entries(slices)
         .map(([name, { initialArg, reducer, isGetInitialStateFromStorage, init, middleware, initialState, reducers, },]) => !!reducers
         ? createReduxSliceWrapper(name, reducers, initialState)
@@ -138,6 +138,7 @@ const getHookAndProviderFromSlices = (slices = {}, AsyncStorage = null) => {
         }
         const store = configureStore({
             reducer,
+            ...reduxStoreOptions,
         });
         return React.createElement(ReduxProvider, { store: store }, children);
     };

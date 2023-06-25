@@ -173,7 +173,11 @@ const createTypicalSlice = (
   return { useValues, useActions, Provider, reduxSlice };
 };
 
-const getHookAndProviderFromSlices = (slices = {}, AsyncStorage = null) => {
+const getHookAndProviderFromSlices = ({
+  slices = {},
+  AsyncStorage = null,
+  reduxStoreOptions = {},
+}) => {
   const { useValues, useActions, providers, reduxSlices } = Object.entries(
     slices
   )
@@ -248,6 +252,7 @@ const getHookAndProviderFromSlices = (slices = {}, AsyncStorage = null) => {
     }
     const store = configureStore({
       reducer,
+      ...reduxStoreOptions,
     });
     return <ReduxProvider store={store}>{children}</ReduxProvider>;
   };
