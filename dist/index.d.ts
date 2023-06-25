@@ -51,9 +51,12 @@ declare const getHookAndProviderFromSlices: (config: {
   };
   AsyncStorage?: any;
   reduxStoreOptions?: {
-    middleware:
+    middleware?:
       | ((getDefaultMiddleware: any) => MiddlewareArray)
       | MiddlewareArray;
+    devTools?: any;
+    preloadedState?: any;
+    enhancers?: any;
   };
 }) => {
   useSlice: (<T, K = T>(
