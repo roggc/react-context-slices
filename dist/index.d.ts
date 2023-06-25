@@ -1,4 +1,9 @@
 import * as React from "react";
+import {
+  Middleware,
+  Dispatch as ReduxDispatch,
+  AnyAction,
+} from "@reduxjs/toolkit";
 type ContextProviderType = ({
   children,
 }: React.PropsWithChildren) => JSX.Element;
@@ -35,19 +40,33 @@ export function defineSlice<T, K = T>(
   slice: SliceWithInit<T, K>
 ): SliceWithInit<T, K>;
 export function defineSlice<T>(slice: SliceWithoutInit<T>): SliceWithoutInit<T>;
-declare const getHookAndProviderFromSlices: (
+type MiddlewareArray = Middleware<any, any, ReduxDispatch<AnyAction>>[];
+export type ReduxMiddleware = (store: {
+  getState: () => any;
+  dispatch: ReduxDispatch<AnyAction>;
+}) => (next: ReduxDispatch<AnyAction>) => (action: AnyAction) => void;
+declare const getHookAndProviderFromSlices: (config: {
   slices?: {
     [slice: string]: Slice<any, any>;
-  },
-  AsyncStorage?: any
-) => {
+  };
+  AsyncStorage?: any;
+  reduxStoreOptions?: {
+    middleware:
+      | ((getDefaultMiddleware: any) => MiddlewareArray)
+      | MiddlewareArray;
+  };
+}) => {
   useSlice: (<T, K = T>(
     slice: string,
     selector: (state: T) => K
-  ) => [K, Dispatch, { [x: string]: any }]) &
+  ) => [K, ReduxDispatch<AnyAction>, { [x: string]: any }]) &
     (<T, K = T>(
       slice: string
-    ) => [K, SetValue<T> & Dispatch, { [x: string]: any }]);
+    ) => [
+      K,
+      SetValue<T> & Dispatch & ReduxDispatch<AnyAction>,
+      { [x: string]: any }
+    ]);
   Provider: ContextProviderType;
 };
 export default getHookAndProviderFromSlices;
