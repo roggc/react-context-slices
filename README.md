@@ -6,9 +6,9 @@ When defining a slice, you can choose between a Redux slice or a React Context s
 
 With **`useSlice`**, you can access the state value, setter/dispatcher function, and actions object (for Redux slices). Redux slices support selectors for fine-grained updates.
 
-React Context slices can initialize state from **storage** and use **middleware** for action customization.
+React Context slices can initialize state from **storage** and use **middleware** for action customization in a per-slice basis.
 
-In summary, **`react-context-slices`** simplifies global state management in React and React Native applications with support for both **Redux** and **React Context** and with **zero-boilerplate**.
+In summary, **`react-context-slices`** simplifies global state management in React and React Native applications with support for both **Redux** and **React Context** with **zero-boilerplate**.
 
 ## Table of Contents
 
@@ -132,8 +132,10 @@ For React Context slices only, in case you want to get initial value of a slice 
 import getHookAndProviderFromSlices from "react-context-slices";
 
 export const { useSlice, Provider } = getHookAndProviderFromSlices({
-  counter: { initialArg: 0, isGetInitialStateFromStorage: true },
-  // rest of slices
+  slices: {
+    counter: { initialArg: 0, isGetInitialStateFromStorage: true }, // React Context slice
+    // rest of slices
+  },
 });
 ```
 
@@ -163,20 +165,20 @@ const App = () => {
 export default App;
 ```
 
-For React Native you do the same but pass `AsyncStorage` as a second parameter to `getHookAndProviderFromSlices`:
+For React Native you do the same but pass also `AsyncStorage` to the configuration object accepted by `getHookAndProviderFromSlices`:
 
 ```javascript
 // slices.js
 import getHookAndProviderFromSlices from "react-context-slices";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-export const { useSlice, Provider } = getHookAndProviderFromSlices(
-  {
-    counter: { initialArg: 0, isGetInitialStateFromStorage: true },
+export const { useSlice, Provider } = getHookAndProviderFromSlices({
+  slices: {
+    counter: { initialArg: 0, isGetInitialStateFromStorage: true }, // React Context slice
     // rest of slices
   },
-  AsyncStorage // <-- pass this for React Native
-);
+  AsyncStorage, // <-- set AsyncStorage key to AsyncStorage for React Native
+});
 ```
 
 and in your component you must do (for React Native):
@@ -221,36 +223,39 @@ For React Context slices only, you can also pass middleware (without access to t
 import getHookAndProviderFromSlices from "react-context-slices";
 
 export const { useSlice, Provider } = getHookAndProviderFromSlices({
-  todos: {
-    initialArg: [],
-    reducer: (state, action) => {
-      switch (action.type) {
-        case "FETCH_TODOS_REQUEST":
-          return state;
-        case "FETCH_TODOS_SUCCESS":
-          return action.payload;
-        case "FETCH_TODOS_FAILURE":
-          return state;
-        default:
-          return state;
-      }
-    },
-    middleware: [
-      () => (next) => (action) => {
-        // <-- logger middleware (first middleware applied)
-        console.log("dispathing action:", action);
-        next(action);
-      },
-      (dispatch) => (next) => (action) => {
-        // <-- async middleware (second middleware applied)
-        if (typeof action === "function") {
-          return action(dispatch);
+  slices: {
+    todos: {
+      // React Context slice
+      initialArg: [],
+      reducer: (state, action) => {
+        switch (action.type) {
+          case "FETCH_TODOS_REQUEST":
+            return state;
+          case "FETCH_TODOS_SUCCESS":
+            return action.payload;
+          case "FETCH_TODOS_FAILURE":
+            return state;
+          default:
+            return state;
         }
-        next(action);
       },
-    ],
+      middleware: [
+        () => (next) => (action) => {
+          // <-- logger middleware (first middleware applied)
+          console.log("dispathing action:", action);
+          next(action);
+        },
+        (dispatch) => (next) => (action) => {
+          // <-- async middleware (second middleware applied)
+          if (typeof action === "function") {
+            return action(dispatch);
+          }
+          next(action);
+        },
+      ],
+    },
+    // rest of slices
   },
-  // rest of slices
 });
 ```
 
@@ -287,7 +292,7 @@ const Todos = () => {
 export default Todos;
 ```
 
-You can also pass options for the Redux store (parameters to the configureStore function, except `reducer`, check documentation in Redux):
+You can also pass options for the Redux store (parameters to the `configureStore` function from Redux Toolkit, except `reducer`, check documentation in Redux Toolkit):
 
 ```javascript
 import getHookAndProviderFromSlices from "react-context-slices";
