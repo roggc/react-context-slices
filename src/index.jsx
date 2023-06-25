@@ -1,6 +1,17 @@
 import * as React from "react";
+import {
+  configureStore,
+  createSlice as createReduxSlice,
+} from "@reduxjs/toolkit";
+import {
+  Provider as ReduxProvider,
+  useSelector,
+  useDispatch,
+} from "react-redux";
 
 const __SET_INIT_PERSISTED_STATE_RN__ = "__SET_INIT_PERSISTED_STATE_RN__";
+
+const createReduxSliceWrapper = (name, reducers, initialState) => {};
 
 const createSlice = (
   reducer,
@@ -10,8 +21,13 @@ const createSlice = (
   getUseActions,
   isGetInitialStateFromStorage,
   AsyncStorage,
-  middleware = []
+  middleware = [],
+  initialState,
+  reducers
 ) => {
+  const reduxSlice = !!reducers
+    ? { [name]: createReduxSlice({ name, initialState, reducers }) }
+    : {};
   const StateContext = React.createContext({});
   const DispatchContext = React.createContext(() => {
     console?.log("You must use the Provider up in the tree");
@@ -90,6 +106,7 @@ const createSlice = (
     useValues,
     useActions,
     Provider,
+    reduxSlice,
   };
 };
 
@@ -114,7 +131,9 @@ const createTypicalSlice = (
   init,
   isGetInitialStateFromStorage,
   AsyncStorage,
-  middleware
+  middleware,
+  initialState,
+  reducers
 ) => {
   const SET = "SET";
   const reducer_ =
@@ -127,7 +146,7 @@ const createTypicalSlice = (
           return state;
       }
     });
-  const { useValues, useActions, Provider } = createSlice(
+  const { useValues, useActions, Provider, reduxSlice } = createSlice(
     reducer_,
     initialArg,
     init,
@@ -142,17 +161,29 @@ const createTypicalSlice = (
     },
     isGetInitialStateFromStorage,
     AsyncStorage,
-    middleware
+    middleware,
+    initialState,
+    reducers
   );
-  return { useValues, useActions, Provider };
+  return { useValues, useActions, Provider, reduxSlice };
 };
 
 const getHookAndProviderFromSlices = (slices = {}, AsyncStorage = null) => {
-  const { useValues, useActions, providers } = Object.entries(slices)
+  const { useValues, useActions, providers, reduxSlices } = Object.entries(
+    slices
+  )
     .map(
       ([
         name,
-        { initialArg, reducer, isGetInitialStateFromStorage, init, middleware },
+        {
+          initialArg,
+          reducer,
+          isGetInitialStateFromStorage,
+          init,
+          middleware,
+          initialState,
+          reducers,
+        },
       ]) =>
         createTypicalSlice(
           name,
@@ -161,7 +192,9 @@ const getHookAndProviderFromSlices = (slices = {}, AsyncStorage = null) => {
           init,
           !!isGetInitialStateFromStorage,
           AsyncStorage,
-          middleware
+          middleware,
+          initialState,
+          reducers
         )
     )
     .reduce(
@@ -172,19 +205,48 @@ const getHookAndProviderFromSlices = (slices = {}, AsyncStorage = null) => {
         }),
         useActions: () => ({ ...res.useActions(), ...values.useActions() }),
         providers: [...res.providers, values.Provider],
+        reduxSlices: [...res.reduxSlices, values.reduxSlice],
       }),
       {
         useValues: (slice) => ({}),
         useActions: () => ({}),
         providers: [],
+        reduxSlices: [],
       }
     );
-  const useSlice = (name) => {
+  const useSlice_ = (name) => {
     const { [name]: value } = useValues(name);
     const { [name]: actions } = useActions();
     return [value, !!slices[name]?.reducer ? actions.dispatch : actions?.set];
   };
-  const Provider = composeProviders(providers);
+  const useSlice = (name, selector = (state) => state) => {
+    const reduxSlice = reduxSlices.find((rS) => !!rS[name]);
+    if (!!reduxSlice) {
+      const preSelector = (state) => state[name];
+      const value = useSelector((state) => selector(preSelector(state)));
+      return [value, useDispatch(), reduxSlice[name].actions];
+    }
+    return useSlice_(name);
+  };
+  const ReduxProviderWrapper = ({ children }) => {
+    const reducer = reduxSlices.reduce(
+      (res, rS) => ({
+        ...res,
+        ...(!!Object.keys(rS).length
+          ? { [Object.keys(rS)[0]]: Object.values(rS)[0].reducer }
+          : rS),
+      }),
+      {}
+    );
+    if (!Object.keys(reducer).length) {
+      return <>{children}</>;
+    }
+    const store = configureStore({
+      reducer,
+    });
+    return <ReduxProvider store={store}>{children}</ReduxProvider>;
+  };
+  const Provider = composeProviders([...providers, ReduxProviderWrapper]);
   return {
     useSlice,
     Provider,

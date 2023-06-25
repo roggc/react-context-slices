@@ -1,12 +1,14 @@
 # react-context-slices
 
-Manage global state like local state in React and React Native: define state slices with **`getHookAndProviderFromSlices`** and then use the **`useSlice`** hook in your components (the **`useSlice`** hook acts either as a **`useState`** or **`useReducer`** hook, depending on whether you defined a reducer for the slice; it gives you access to the slice state value and to a setter or dispatch function).
+**`react-context-slices`** is a **zero-boilerplate** library for global state management in React and React Native. It seamlessly integrates with **Redux** and **React Context**. To use it, define your slices using the **`getHookAndProviderFromSlices`** function. This gives you the **`useSlice`** hook and a **provider** component.
 
-Get initial state of a slice from **storage** (local for web or async for React Native) or add **middleware** in a per-slice basis to intercept and customise the workflow of dispatching actions (make API calls, logging or other side effects) without access to the state value.
+When defining a slice, you can choose between a Redux slice or a React Context slice. A Redux slice includes a **`reducers`** key, while a React Context slice does not.
 
-All this with **zero-boilerplate**. If you plan to use **React Context**, use **`react-context-slices`**.
+With **`useSlice`**, you can access the state value, setter/dispatcher function, and actions object (for Redux slices). Redux slices support selectors for fine-grained updates.
 
-**¡¡¡** A Note on **performance**: in **Redux** you can use a selector to select only an element of the array, and the component will re-render only when that element changes, not the array. In **react-context-slices** you can't do that. As an alternative, when using react-context-slices, you can memoize the JSX returned in these cases. **!!!**
+React Context slices can initialize state from **storage** and use **middleware** for action customization.
+
+In summary, **`react-context-slices`** simplifies global state management in React and React Native applications with support for both **Redux** and **React Context** and with **zero-boilerplate**.
 
 ## Table of Contents
 
@@ -29,8 +31,25 @@ All this with **zero-boilerplate**. If you plan to use **React Context**, use **
 import getHookAndProviderFromSlices from "react-context-slices";
 
 export const { useSlice, Provider } = getHookAndProviderFromSlices({
-  count1: { initialArg: 0 },
-  count2: {
+  count1: {
+    // Redux slice
+    initialState: 0,
+    reducers: {
+      increment: (state) => state + 1,
+    },
+  },
+  values: {
+    // Redux slice
+    initialState: [],
+    reducers: {
+      add: (state, { payload }) => {
+        state.push(payload);
+      },
+    },
+  },
+  count2: { initialArg: 0 }, // Context slice
+  count3: {
+    // Context slice
     initialArg: 0,
     reducer: (state, { type }) => {
       switch (type) {
@@ -41,7 +60,7 @@ export const { useSlice, Provider } = getHookAndProviderFromSlices({
       }
     },
   },
-  // rest of slices
+  // rest of slices (either Redux or Context slices)
 });
 ```
 
@@ -50,17 +69,31 @@ export const { useSlice, Provider } = getHookAndProviderFromSlices({
 import { useSlice } from "./slices";
 
 const App = () => {
-  const [count1, setCount1] = useSlice("count1");
-  const [count2, dispatchCount2] = useSlice("count2");
+  const [count1, dispatchCount1, { increment }] = useSlice("count1");
+  const [values, dispatchValues, { add }] = useSlice("values");
+  const [value] = useSlice("values", (state) => state[0]);
+  const [count2, setCount2] = useSlice("count2");
+  const [count3, dispatchCount3] = useSlice("count3");
   return (
     <>
       <div>
-        <button onClick={() => setCount1((c) => c + 1)}>+</button>
+        <button onClick={() => dispatchCount1(increment())}>+</button>
         {count1}
       </div>
       <div>
-        <button onClick={() => dispatchCount2({ type: "increment" })}>+</button>
+        <button onClick={() => dispatchValues(add(9))}>add</button>
+        {values.map((v, i) => (
+          <div key={`${v}_${i}`}>{v}</div>
+        ))}
+      </div>
+      <div>{value}</div>
+      <div>
+        <button onClick={() => setCount2((c) => c + 1)}>+</button>
         {count2}
+      </div>
+      <div>
+        <button onClick={() => dispatchCount3({ type: "increment" })}>+</button>
+        {count3}
       </div>
     </>
   );
@@ -71,24 +104,25 @@ export default App;
 
 ```javascript
 // index.jsx
-import React from "react";
-import ReactDOM from "react-dom/client";
-import App from "./App";
+import { StrictMode } from "react";
+import { createRoot } from "react-dom/client";
 import { Provider } from "./slices";
+import App from "./app";
 
-const root = ReactDOM.createRoot(
-  document.getElementById("root") as HTMLElement
-);
-root.render(
-  <React.StrictMode>
-    <Provider>
-      <App />
-    </Provider>
-  </React.StrictMode>
-);
+const container = document.getElementById("root");
+
+if (container !== null) {
+  createRoot(container).render(
+    <StrictMode>
+      <Provider>
+        <App />
+      </Provider>
+    </StrictMode>
+  );
+}
 ```
 
-In case you want to get initial value of a slice from local storage, you do:
+For React Context slices only, in case you want to get initial value of a slice from local storage, you do:
 
 ```javascript
 // slices.js
@@ -177,7 +211,7 @@ const App = () => {
 export default App;
 ```
 
-You can also pass some middleware if you wish too. You must specify it in the definition of a slice:
+For React Context slices only, you can also pass some middleware if you wish too. You must specify it in the definition of a slice:
 
 ```javascript
 // slices.js
@@ -315,7 +349,7 @@ const App = () => {
 export default App;
 ```
 
-## Things you can do
+## Things you can do (React Context slices)
 
 ```javascript
 // slices.js
@@ -369,9 +403,33 @@ const App = () => {
 export default App;
 ```
 
-## A note on why "initialArg" nomenclature
+## A note on why "initialArg" nomenclature (React Context slices)
 
 To define a slice you must pass an object which its possible keys (all optional) are `initialArg`, `init`, `reducer`, `isGetInitialStateFromStorage` and `middleware`. The first three of them are exactly the same as the defined in the React docs about `useReducer` hook. Check there the info to know what they do. The `isGetInitialStateFromStorage` its name is not `isGetInitialArgFromStorage` because in this case the `init` function will not be applied (in the case that a value from local storage has been recovered) even when supplied in the definition of the slice because what we save in the local storage it's the state value and not `initialArg`, so when we recover it we do not must apply the `init` function and use directly this value as initial state.
+
+## How to use it (javascript + Redux slices)
+
+```javascript
+// slices.js
+import getHookAndProviderFromSlices from "react-context-slices";
+
+export const { useSlice, Provider } = getHookAndProviderFromSlices({
+  counter: {
+    initialState: 0,
+    reducers: {
+      increment: (state) => state + 1,
+    },
+  },
+  counters: {
+    initialState: [],
+    reducers: {
+      add: (state, action) => {
+        state.push(action.payload);
+      },
+    },
+  },
+});
+```
 
 ## API Reference
 
