@@ -1,14 +1,16 @@
 # react-context-slices
 
-**`react-context-slices`** is a **zero-boilerplate** library for global state management in React and React Native. It seamlessly integrates with **Redux** and **React Context**. To use it, define your slices using the **`getHookAndProviderFromSlices`** function. This gives you the **`useSlice`** hook and a **provider** component.
+**`react-context-slices`** is a library that offers a unique solution to global state management in React by seamlessly integrating both **Redux** and **React Context** with **zero-boilerplate**.
 
-When defining a slice, you can choose between a Redux slice or a React Context slice. A Redux slice includes a **`reducers`** key, while a React Context slice does not.
+Define your slices using the **`getHookAndProviderFromSlices`** function provided by the library. This gives you the **`useSlice`** hook and a **provider** component.
 
-With **`useSlice`**, you can access the state value, setter/dispatcher function, and actions object (for Redux slices). Redux slices support selectors for fine-grained updates.
+Use the **`useSlice`** hook in your components to get the value of the slice state, a setter or dispatch function, and an actions object (for Redux slices).
 
-React Context slices can initialize state from **storage** and use **middleware** for action customization in a per-slice basis.
+What differentiates a Redux slice from a React Context slice is the presence of the **`reducers`** key in its definition (if present, it's a Redux slice; otherwise it's a React Context slice).
 
-In summary, **`react-context-slices`** simplifies global state management in React and React Native applications with support for both **Redux** and **React Context** with **zero-boilerplate**.
+React Context slices can initialize state from **storage** (local for web and async for React Native) and use **middleware** for action workflow customization in a per-slice basis.
+
+In summary, **`react-context-slices`** offers a unique solution to global state management by seamlessly integrating both **Redux** and **React Context** with **zero-boilerplate**.
 
 ## Table of Contents
 
