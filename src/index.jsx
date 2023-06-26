@@ -223,19 +223,20 @@ const getHookAndProviderFromSlices = ({
         reduxSlices: [],
       }
     );
-  const useSlice_ = (name) => {
+  const useContextSlice = (name) => {
     const { [name]: value } = useValues(name);
     const { [name]: actions } = useActions();
     return [value, !!slices[name]?.reducer ? actions.dispatch : actions?.set];
   };
   const useSlice = (name, selector = (state) => state) => {
     const reduxSlice = reduxSlices.find((rS) => !!rS[name]);
-    if (!!reduxSlice) {
-      const preSelector = (state) => state[name];
-      const value = useSelector((state) => selector(preSelector(state)));
-      return [value, useDispatch(), reduxSlice[name].actions];
-    }
-    return useSlice_(name);
+    const preSelector = (state) => state[name];
+    const value = useSelector((state) => selector(preSelector(state)));
+    const dispatch = useDispatch();
+    const contextValues = useContextSlice(name);
+    return !!reduxSlice
+      ? [value, dispatch, reduxSlice[name].actions]
+      : contextValues;
   };
   const ReduxProviderWrapper = ({ children }) => {
     const reducer = reduxSlices.reduce(
