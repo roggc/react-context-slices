@@ -440,8 +440,10 @@ export default App;
 import getHookAndProviderFromSlices from "react-context-slices";
 
 export const { useSlice, Provider } = getHookAndProviderFromSlices({
-  count: {}, // <-- intialArg === undefined
-  // rest of slices
+  slices: {
+    count: {}, // <-- intialArg === undefined
+    // rest of slices
+  },
 });
 ```
 
@@ -450,8 +452,10 @@ export const { useSlice, Provider } = getHookAndProviderFromSlices({
 import getHookAndProviderFromSlices from "react-context-slices";
 
 export const { useSlice, Provider } = getHookAndProviderFromSlices({
-  isLightTheme: { initialArg: true, reducer: (state) => !state }, // <-- reducer without action
-  // rest of slices
+  slices: {
+    isLightTheme: { initialArg: true, reducer: (state) => !state }, // <-- reducer without action
+    // rest of slices
+  },
 });
 ```
 
@@ -460,8 +464,10 @@ export const { useSlice, Provider } = getHookAndProviderFromSlices({
 import getHookAndProviderFromSlices from "react-context-slices";
 
 export const { useSlice, Provider } = getHookAndProviderFromSlices({
-  greeting: { initialArg: "hello", reducer: () => "bye" }, // <-- reducer without state and action
-  // rest of slices
+  slices: {
+    greeting: { initialArg: "hello", reducer: () => "bye" }, // <-- reducer without state and action
+    // rest of slices
+  },
 });
 ```
 
@@ -470,8 +476,10 @@ export const { useSlice, Provider } = getHookAndProviderFromSlices({
 import getHookAndProviderFromSlices from "react-context-slices";
 
 export const { useSlice, Provider } = getHookAndProviderFromSlices({
-  greeting: { init: () => "hello" }, // <-- pass an 'init' function without an 'initialArg'
-  // rest of slices
+  slices: {
+    greeting: { init: () => "hello" }, // <-- pass an 'init' function without an 'initialArg'
+    // rest of slices
+  },
 });
 ```
 
