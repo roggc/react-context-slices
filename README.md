@@ -856,10 +856,10 @@ Used for Redux slices. It's the initial state for the slice. Cannot be `undefine
     slice: string,
     selector: (state: T) => K
   ) => [K, ReduxDispatch<AnyAction>, { [x: string]: any }]) &
-    (<T, K = T>(
+    (<T>(
       slice: string
     ) => [
-      K,
+      T,
       SetValue<T> & Dispatch & ReduxDispatch<AnyAction>,
       { [x: string]: any }
     ]);
