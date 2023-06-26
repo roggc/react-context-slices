@@ -63,10 +63,10 @@ declare const getHookAndProviderFromSlices: (config: {
     slice: string,
     selector: (state: T) => K
   ) => [K, ReduxDispatch<AnyAction>, { [x: string]: any }]) &
-    (<T, K = T>(
+    (<T>(
       slice: string
     ) => [
-      K,
+      T,
       SetValue<T> & Dispatch & ReduxDispatch<AnyAction>,
       { [x: string]: any }
     ]);
