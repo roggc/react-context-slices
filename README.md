@@ -576,11 +576,91 @@ export const { useSlice, Provider } = getHookAndProviderFromSlices({
 });
 ```
 
-</td></tr></table>
+</td></tr>
+<tr>
+<td>
+
+`ReduxMiddleware` (typescript type)
+
+</td>
+<td>
+
+```typescript
+(store: {
+  getState: () => any;
+  dispatch: ReduxDispatch<AnyAction>;
+}) => (next: ReduxDispatch<AnyAction>) => (action: AnyAction) => void;
+```
+
+</td>
+<td>
+
+Is the type against to make an assertion in typescript when defining middleware in `reduxStoreOptions`
+
+</td>
+<td>
+
+```typescript
+{
+  reduxStoreOptions: {
+    middleware: (getDefaultMiddleware) =>
+      getDefaultMiddleware().concat(((store) => (next) => (action) => {
+        //...
+      }) as ReduxMiddleware);
+  }
+}
+```
+
+</td>
+</tr>
+</table>
 
 Next are described other entities encountered when using this library:
 
 <table><tr><th>Name</th>                       <th>Type</th>                                                                                                                                                                                                                              <th>Description</th>                                                                                                                                                                                                                                                                                                                                                     <th>Example</th>                                                                                                                                                                                                         </tr>
+<tr>
+<td>
+
+config object
+
+</td>
+<td>
+
+```typescript
+{
+  slices?: {
+    [slice: string]: Slice<any, any>;
+  };
+  AsyncStorage?: any;
+  reduxStoreOptions?: {
+    middleware?:
+      | ((getDefaultMiddleware: any) => MiddlewareArray)
+      | MiddlewareArray;
+    devTools?: any;
+    preloadedState?: any;
+    enhancers?: any;
+  };
+}
+```
+
+</td>
+<td>
+
+It's the object passed to `getHookAndProviderFromSlices`. It can contain three optional keys: `slices`, `AsyncStorage`, and `reduxStoreOptions`.
+
+</td>
+<td>
+
+```javascript
+{
+  slices: {
+    //...
+  }
+}
+```
+
+</td>
+</tr>
 <tr><td>
 
 slices object
@@ -856,10 +936,10 @@ Used for Redux slices. It's the initial state for the slice. Cannot be `undefine
     slice: string,
     selector: (state: T) => K
   ) => [K, ReduxDispatch<AnyAction>, { [x: string]: any }]) &
-    (<T, K = T>(
+    (<T>(
       slice: string
     ) => [
-      K,
+      T,
       SetValue<T> & Dispatch & ReduxDispatch<AnyAction>,
       { [x: string]: any }
     ]);
