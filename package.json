@@ -1,6 +1,6 @@
 {
   "name": "react-context-slices",
-  "version": "9.0.2",
+  "version": "9.0.3",
   "description": "Manage global state like local state in React and React Native!",
   "main": "dist/index.js",
   "scripts": {
