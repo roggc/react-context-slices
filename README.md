@@ -10,7 +10,7 @@ What differentiates a Redux slice from a React Context slice is the presence of 
 
 React Context slices can initialize state from **storage** (local for web and async for React Native) and use **middleware** for action workflow customization in a per-slice basis.
 
-In summary, **`react-context-slices`** offers a unique solution to global state management by seamlessly integrating both **Redux** and **React Context** with **zero-boilerplate**.
+Use **`react-context-slices`** to manage global state in React with **zero-boilerplate** either by defining **Redux** slices or **React Context** slices.
 
 ## Table of Contents
 
