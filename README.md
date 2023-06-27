@@ -1,6 +1,6 @@
 # react-context-slices
 
-**`react-context-slices`** is a library that offers a unique solution to global state management in React by seamlessly integrating both **Redux** and **React Context** with **zero-boilerplate**.
+**`react-context-slices`** offers a unique solution to global state management in React by seamlessly integrating both **Redux** and **React Context** with **zero-boilerplate**.
 
 Define your slices using the **`getHookAndProviderFromSlices`** function provided by the library. This gives you the **`useSlice`** hook and a **provider** component.
 
