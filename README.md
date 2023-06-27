@@ -10,7 +10,7 @@ What differentiates a Redux slice from a React Context slice is the presence of 
 
 React Context slices can initialize state from **storage** (local for web and async for React Native) and use **middleware** for action workflow customization in a per-slice basis.
 
-In summary, **`react-context-slices`** offers a unique solution to global state management by seamlessly integrating both **Redux** and **React Context** with **zero-boilerplate**.
+Use **`react-context-slices`** to manage global state in React with **zero-boilerplate** either by defining **Redux** slices or **React Context** slices.
 
 ## Table of Contents
 
@@ -41,29 +41,11 @@ export const { useSlice, Provider } = getHookAndProviderFromSlices({
         increment: (state) => state + 1,
       },
     },
-    values: {
-      // Redux slice
-      initialState: [],
-      reducers: {
-        add: (state, { payload }) => {
-          state.push(payload);
-        },
-      },
-    },
-    count2: { initialArg: 0 }, // Context slice
-    count3: {
-      // Context slice
+    count2: {
+      // React Context slice
       initialArg: 0,
-      reducer: (state, { type }) => {
-        switch (type) {
-          case "increment":
-            return state + 1;
-          default:
-            return state;
-        }
-      },
     },
-    // rest of slices (either Redux or Context slices)
+    // rest of slices (either Redux or React Context slices)
   },
 });
 ```
@@ -74,11 +56,7 @@ import { useSlice } from "./slices";
 
 const App = () => {
   const [count1, dispatchCount1, { increment }] = useSlice("count1");
-  const [values, dispatchValues, { add }] = useSlice("values");
-  const [value] = useSlice("values", (state) => state[0]);
   const [count2, setCount2] = useSlice("count2");
-  const [count3, dispatchCount3] = useSlice("count3");
-
   return (
     <>
       <div>
@@ -86,19 +64,8 @@ const App = () => {
         {count1}
       </div>
       <div>
-        <button onClick={() => dispatchValues(add(9))}>add</button>
-        {values.map((v, i) => (
-          <div key={`${v}_${i}`}>{v}</div>
-        ))}
-      </div>
-      <div>{value}</div>
-      <div>
         <button onClick={() => setCount2((c) => c + 1)}>+</button>
         {count2}
-      </div>
-      <div>
-        <button onClick={() => dispatchCount3({ type: "increment" })}>+</button>
-        {count3}
       </div>
     </>
   );
@@ -136,7 +103,7 @@ import getHookAndProviderFromSlices from "react-context-slices";
 export const { useSlice, Provider } = getHookAndProviderFromSlices({
   slices: {
     counter: { initialArg: 0, isGetInitialStateFromStorage: true }, // React Context slice
-    // rest of slices
+    // rest of slices (either Redux or React Context slices)
   },
 });
 ```
@@ -177,7 +144,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 export const { useSlice, Provider } = getHookAndProviderFromSlices({
   slices: {
     counter: { initialArg: 0, isGetInitialStateFromStorage: true }, // React Context slice
-    // rest of slices
+    // rest of slices (either Redux or React Context slices)
   },
   AsyncStorage, // <-- set AsyncStorage key to AsyncStorage for React Native
 });
@@ -256,7 +223,7 @@ export const { useSlice, Provider } = getHookAndProviderFromSlices({
         },
       ],
     },
-    // rest of slices
+    // rest of slices (either Redux or React Context slices)
   },
 });
 ```
@@ -294,7 +261,7 @@ const Todos = () => {
 export default Todos;
 ```
 
-You can also pass options for the Redux store (parameters to the `configureStore` function from Redux Toolkit, except `reducer`, check documentation in Redux Toolkit):
+You can also pass options for the Redux store (parameters to the `configureStore` function from Redux Toolkit, except `reducer`; check the documentation in Redux Toolkit):
 
 ```javascript
 import getHookAndProviderFromSlices from "react-context-slices";
@@ -308,7 +275,7 @@ export const { useSlice, Provider } = getHookAndProviderFromSlices({
         increment: (state) => state + 1,
       },
     },
-    // rest of slices (either Redux or Context slices)
+    // rest of slices (either Redux or React Context slices)
   },
   reduxStoreOptions: {
     middleware: (getDefaultMiddleware) =>
@@ -327,59 +294,19 @@ export const { useSlice, Provider } = getHookAndProviderFromSlices({
 // slices.ts
 import getHookAndProviderFromSlices, {
   defineSlice,
-  ReduxMiddleware,
 } from "react-context-slices";
 
 export const { useSlice, Provider } = getHookAndProviderFromSlices({
   slices: {
     count1: defineSlice<number>({
-      // Redux slice
       initialState: 0,
       reducers: {
         increment: (state) => state + 1,
       },
     }),
-    values: defineSlice<number[]>({
-      // Redux slice
-      initialState: [],
-      reducers: {
-        add: (state, { payload }) => {
-          state.push(payload);
-        },
-      },
-    }),
-    count2: defineSlice<number>({ initialArg: 0 }), // Context slice
-    count3: defineSlice<number, boolean>({
-      // Context slice
-      initialArg: false,
-      init: (condition) => (condition ? -1 : 0),
-    }),
-    count4: defineSlice<number>({
-      // Context slice
-      initialArg: 5,
-      init: (initialArg) => initialArg * initialArg,
-    }),
-    count5: defineSlice<number>({
-      // Context slice
+    count2: defineSlice<number>({
       initialArg: 0,
-      reducer: (state, { type }) => {
-        switch (type) {
-          case "increment":
-            return state + 1;
-          default:
-            return state;
-        }
-      },
     }),
-    // rest of slices (either Redux or Context slices)
-  },
-  reduxStoreOptions: {
-    middleware: (getDefaultMiddleware) =>
-      getDefaultMiddleware().concat(((store) => (next) => (action) => {
-        console.log("dispatching action:", action);
-        next(action);
-        console.log("next state:", store.getState());
-      }) as ReduxMiddleware),
   },
 });
 ```
@@ -388,17 +315,11 @@ Then in your component:
 
 ```typescript
 // app.tsx
-import { useSlice } from "./slices";
+import { useSlice } from "@slices";
 
 const App = () => {
   const [count1, dispatchCount1, { increment }] = useSlice<number>("count1");
-  const [values, dispatchValues, { add }] = useSlice<number[]>("values");
-  const [value] = useSlice<number[], number>("values", (state) => state[0]);
   const [count2, setCount2] = useSlice<number>("count2");
-  const [count3, setCount3] = useSlice<number>("count3");
-  const [count4, setCount4] = useSlice<number>("count4");
-  const [count5, dispatchCount5] = useSlice<number>("count5");
-
   return (
     <>
       <div>
@@ -406,27 +327,8 @@ const App = () => {
         {count1}
       </div>
       <div>
-        <button onClick={() => dispatchValues(add(9))}>add</button>
-        {values.map((v, i) => (
-          <div key={`${v}_${i}`}>{v}</div>
-        ))}
-      </div>
-      <div>{value}</div>
-      <div>
         <button onClick={() => setCount2((c) => c + 1)}>+</button>
         {count2}
-      </div>
-      <div>
-        <button onClick={() => setCount3((c) => c + 1)}>+</button>
-        {count3}
-      </div>
-      <div>
-        <button onClick={() => setCount4((c) => c + 1)}>+</button>
-        {count4}
-      </div>
-      <div>
-        <button onClick={() => dispatchCount5({ type: "increment" })}>+</button>
-        {count5}
       </div>
     </>
   );
@@ -443,8 +345,8 @@ import getHookAndProviderFromSlices from "react-context-slices";
 
 export const { useSlice, Provider } = getHookAndProviderFromSlices({
   slices: {
-    count: {}, // <-- intialArg === undefined
-    // rest of slices
+    count: {}, // <-- intialArg === undefined (React Context slice)
+    // rest of slices (either Redux or React Context slices)
   },
 });
 ```
@@ -455,8 +357,8 @@ import getHookAndProviderFromSlices from "react-context-slices";
 
 export const { useSlice, Provider } = getHookAndProviderFromSlices({
   slices: {
-    isLightTheme: { initialArg: true, reducer: (state) => !state }, // <-- reducer without action
-    // rest of slices
+    isLightTheme: { initialArg: true, reducer: (state) => !state }, // <-- reducer without action (React Context slice)
+    // rest of slices (either Redux or React Context slices)
   },
 });
 ```
@@ -467,8 +369,8 @@ import getHookAndProviderFromSlices from "react-context-slices";
 
 export const { useSlice, Provider } = getHookAndProviderFromSlices({
   slices: {
-    greeting: { initialArg: "hello", reducer: () => "bye" }, // <-- reducer without state and action
-    // rest of slices
+    greeting: { initialArg: "hello", reducer: () => "bye" }, // <-- reducer without state and action (React Context slice)
+    // rest of slices (either Redux or React Context slices)
   },
 });
 ```
@@ -479,8 +381,8 @@ import getHookAndProviderFromSlices from "react-context-slices";
 
 export const { useSlice, Provider } = getHookAndProviderFromSlices({
   slices: {
-    greeting: { init: () => "hello" }, // <-- pass an 'init' function without an 'initialArg'
-    // rest of slices
+    greeting: { init: () => "hello" }, // <-- pass an 'init' function without an 'initialArg' (React Context slice)
+    // rest of slices (either Redux or React Context slices)
   },
 });
 ```

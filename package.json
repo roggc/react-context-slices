@@ -1,7 +1,7 @@
 {
   "name": "react-context-slices",
-  "version": "9.0.8",
-  "description": "react-context-slices offers a unique solution to global state management in React by seamlessly integrating Redux and React Context with zero-boilerplate",
+  "version": "9.0.9",
+  "description": "react-context-slices offers a unique solution to global state management in React by seamlessly integrating both Redux and React Context with zero-boilerplate",
   "main": "dist/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
