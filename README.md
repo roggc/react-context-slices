@@ -46,6 +46,27 @@ export const { useSlice, Provider } = getHookAndProviderFromSlices({
       // React Context slice
       initialArg: 0,
     },
+    count3: {
+      // React Context slice
+      initialArg: 0,
+      reducer: (state, { type }) => {
+        switch (type) {
+          case "increment":
+            return state + 1;
+          default:
+            return state;
+        }
+      },
+    },
+    todos: {
+      // Redux slice
+      initialState: [],
+      reducers: {
+        add: (state, { payload }) => {
+          state.push(payload);
+        },
+      },
+    },
     // rest of slices (either Redux or React Context slices)
   },
 });
@@ -56,18 +77,35 @@ export const { useSlice, Provider } = getHookAndProviderFromSlices({
 import { useSlice } from "./slices";
 
 const App = () => {
-  const [count1, dispatchCount1, { increment }] = useSlice("count1");
+  const [count1, reduxDispatch, { increment }] = useSlice("count1");
   const [count2, setCount2] = useSlice("count2");
+  const [count3, dispatchCount3] = useSlice("count3");
+  const [todos, , { add }] = useSlice("todos");
+  const [firstTodo] = useSlice("todos", (state) => state[0]);
+
   return (
     <>
       <div>
-        <button onClick={() => dispatchCount1(increment())}>+</button>
+        <button onClick={() => reduxDispatch(increment())}>+</button>
         {count1}
       </div>
       <div>
         <button onClick={() => setCount2((c) => c + 1)}>+</button>
         {count2}
       </div>
+      <div>
+        <button onClick={() => dispatchCount3({ type: "increment" })}>+</button>
+        {count3}
+      </div>
+      <div>
+        <button onClick={() => reduxDispatch(add("use react-context-slices"))}>
+          add
+        </button>
+        {todos.map((t, i) => (
+          <div key={i}>{t}</div>
+        ))}
+      </div>
+      <div>{firstTodo}</div>
     </>
   );
 };
@@ -300,14 +338,38 @@ import getHookAndProviderFromSlices, {
 export const { useSlice, Provider } = getHookAndProviderFromSlices({
   slices: {
     count1: defineSlice<number>({
+      // Redux slice
       initialState: 0,
       reducers: {
         increment: (state) => state + 1,
       },
     }),
     count2: defineSlice<number>({
+      // React Context slice
       initialArg: 0,
     }),
+    count3: defineSlice<number>({
+      // React Context slice
+      initialArg: 0,
+      reducer: (state, { type }) => {
+        switch (type) {
+          case "increment":
+            return state + 1;
+          default:
+            return state;
+        }
+      },
+    }),
+    todos: defineSlice<string[]>({
+      // Redux slice
+      initialState: [],
+      reducers: {
+        add: (state, { payload }) => {
+          state.push(payload);
+        },
+      },
+    }),
+    // rest of slices (either Redux or React Context slices)
   },
 });
 ```
@@ -316,21 +378,38 @@ Then in your component:
 
 ```typescript
 // app.tsx
-import { useSlice } from "@slices";
+import { useSlice } from "./slices";
 
 const App = () => {
-  const [count1, dispatchCount1, { increment }] = useSlice<number>("count1");
+  const [count1, reduxDispatch, { increment }] = useSlice<number>("count1");
   const [count2, setCount2] = useSlice<number>("count2");
+  const [count3, dispatchCount3] = useSlice<number>("count3");
+  const [todos, , { add }] = useSlice<string[]>("todos");
+  const [firstTodo] = useSlice<string[], string>("todos", (state) => state[0]);
+
   return (
     <>
       <div>
-        <button onClick={() => dispatchCount1(increment())}>+</button>
+        <button onClick={() => reduxDispatch(increment())}>+</button>
         {count1}
       </div>
       <div>
         <button onClick={() => setCount2((c) => c + 1)}>+</button>
         {count2}
       </div>
+      <div>
+        <button onClick={() => dispatchCount3({ type: "increment" })}>+</button>
+        {count3}
+      </div>
+      <div>
+        <button onClick={() => reduxDispatch(add("use react-context-slices"))}>
+          add
+        </button>
+        {todos.map((t, i) => (
+          <div key={i}>{t}</div>
+        ))}
+      </div>
+      <div>{firstTodo}</div>
     </>
   );
 };
