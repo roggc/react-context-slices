@@ -16,6 +16,9 @@ Use **`react-context-slices`** to manage global state in React with **zero-boile
 
 [Installation](#installation)  
 [How to use it (javascript)](#how-to-use-it-javascript)  
+    [Get initial state from storage (React Context slices)](#get-initial-state-from-storage-react-context-slices)  
+    [Define middleware (React Context slices)](#define-middleware-react-context-slices)  
+    [Pass options to the Redux store](#pass-options-to-the-redux-store)  
 [How to use it (typescript)](#how-to-use-it-typescript)  
 [Things you can do](#things-you-can-do)  
 [A note on why "initialArg" nomenclature (React Context slices)](#a-note-on-why-initialarg-nomenclature-react-context-slices)  
@@ -133,6 +136,8 @@ if (container !== null) {
 }
 ```
 
+### Get initial state from storage (React Context slices)
+
 For React Context slices only, in case you want to get initial value of a slice from local storage, you do:
 
 ```javascript
@@ -224,6 +229,8 @@ const App = () => {
 export default App;
 ```
 
+### Define middleware (React Context slices)
+
 For React Context slices only, you can also pass middleware (without access to the state). You must specify it in the definition of a slice:
 
 ```javascript
@@ -300,7 +307,9 @@ const Todos = () => {
 export default Todos;
 ```
 
-You can also pass options for the Redux store (parameters to the `configureStore` function from Redux Toolkit, except `reducer`; check the documentation in Redux Toolkit):
+### Pass options to the redux store
+
+You can also pass options to the Redux store (parameters of the `configureStore` function from Redux Toolkit, except `reducer`; check the documentation in Redux Toolkit):
 
 ```javascript
 import getHookAndProviderFromSlices from "react-context-slices";
