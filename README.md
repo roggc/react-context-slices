@@ -19,6 +19,7 @@ Use **`react-context-slices`** to manage global state in React with **zero-boile
 [How to use it (typescript)](#how-to-use-it-typescript)  
 [Things you can do](#things-you-can-do)  
 [A note on why "initialArg" nomenclature (React Context slices)](#a-note-on-why-initialarg-nomenclature-react-context-slices)  
+[A note on testing](#a-note-on-testing)  
 [API Reference](#api-reference)  
 [License](#license)
 
@@ -402,6 +403,32 @@ export default App;
 ## A note on why "initialArg" nomenclature (React Context slices)
 
 To define a slice you must pass an object which its possible keys (all optional) are `initialArg`, `init`, `reducer`, `isGetInitialStateFromStorage` and `middleware`. The first three of them are exactly the same as the defined in the React docs about `useReducer` hook. Check there the info to know what they do. The `isGetInitialStateFromStorage` its name is not `isGetInitialArgFromStorage` because in this case the `init` function will not be applied (in the case that a value from local storage has been recovered) even when supplied in the definition of the slice because what we save in the local storage it's the state value and not `initialArg`, so when we recover it we do not must apply the `init` function and use directly this value as initial state.
+
+## A note on testing
+
+If you want to write unit tests while using the library, you must exclude `react-context-slices` from `transformIgnorePatterns` in `jest` configuration file:
+
+```javascript
+// jest.config.js
+module.exports = {
+  transformIgnorePatterns: ["/node_modules/(?!(react-context-slices)/)"],
+  // rest of configuration settings
+};
+```
+
+On React Native you should also exclude `react-native` from the list of `transformIgnorePatterns`:
+
+```javascript
+// jest.config.js
+module.exports = {
+  transformIgnorePatterns: [
+    "/node_modules/(?!(react-context-slices|@react-native|react-native)/)",
+    // rest of configuration settings
+  ],
+};
+```
+
+Essentially what this tells is to not parse the `node_modules` folder **except** for `react-context-slices`. This is so because `react-context-slices` has `import` statements in it, and need to be parsed by `tsc` or `babel` when using `jest`.
 
 ## API Reference
 
