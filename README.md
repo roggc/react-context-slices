@@ -12,6 +12,10 @@ React Context slices can initialize state from **storage** (local for web and as
 
 Use **`react-context-slices`** to manage global state in React with **zero-boilerplate** either by defining **Redux** slices or **React Context** slices.
 
+## Dedicated website (recomended)
+
+If you want to read this documentation it's fine. But there is a dedicated website for the library. It is recomended you take a look at [it](https://react-context-slices.surge.sh).
+
 ## Table of Contents
 
 [Installation](#installation)  
