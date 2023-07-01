@@ -511,8 +511,8 @@ On React Native you should also exclude `react-native` from the list of `transfo
 module.exports = {
   transformIgnorePatterns: [
     "/node_modules/(?!(react-context-slices|@react-native|react-native)/)",
-    // rest of configuration settings
   ],
+  // rest of configuration settings
 };
 ```
 
