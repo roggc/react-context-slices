@@ -14,7 +14,7 @@ Use **`react-context-slices`** to manage global state in React with **zero-boile
 
 ## Dedicated website (recomended)
 
-If you want to read this documentation it's fine. But there is a dedicated website for the library. It is recomended you take a look at [it](https://react-context-slices.surge.sh).
+If you want to read this documentation it's fine. But there is a dedicated website for the library. It is recomended you take a look at [it](https://react-context-slices.github.io).
 
 ## Table of Contents
 
