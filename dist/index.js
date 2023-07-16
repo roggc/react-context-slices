@@ -133,19 +133,19 @@ const getHookAndProviderFromSlices = ({ slices = {}, AsyncStorage = null, reduxS
         return useContextSlice(name);
     };
     const ReduxProviderWrapper = ({ children }) => {
-        const reducer = reduxSlices.reduce((res, rS) => ({
+        const reducer = React.useMemo(() => reduxSlices.reduce((res, rS) => ({
             ...res,
             ...(!!Object.keys(rS).length
                 ? { [Object.keys(rS)[0]]: Object.values(rS)[0].reducer }
                 : rS),
-        }), {});
+        }), {}), [reduxSlices]);
         if (!Object.keys(reducer).length) {
             return React.createElement(React.Fragment, null, children);
         }
-        const store = configureStore({
+        const store = React.useMemo(() => configureStore({
             reducer,
             ...reduxStoreOptions,
-        });
+        }), [reducer, reduxStoreOptions]);
         return (React.createElement(ReduxProvider, { context: SpecificContext, store: store }, children));
     };
     const Provider = composeProviders([...providers, ReduxProviderWrapper]);
