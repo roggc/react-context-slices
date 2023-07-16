@@ -244,22 +244,30 @@ const getHookAndProviderFromSlices = ({
     return useContextSlice(name);
   };
   const ReduxProviderWrapper = ({ children }) => {
-    const reducer = reduxSlices.reduce(
-      (res, rS) => ({
-        ...res,
-        ...(!!Object.keys(rS).length
-          ? { [Object.keys(rS)[0]]: Object.values(rS)[0].reducer }
-          : rS),
-      }),
-      {}
+    const reducer = React.useMemo(
+      () =>
+        reduxSlices.reduce(
+          (res, rS) => ({
+            ...res,
+            ...(!!Object.keys(rS).length
+              ? { [Object.keys(rS)[0]]: Object.values(rS)[0].reducer }
+              : rS),
+          }),
+          {}
+        ),
+      [reduxSlices]
     );
     if (!Object.keys(reducer).length) {
       return <>{children}</>;
     }
-    const store = configureStore({
-      reducer,
-      ...reduxStoreOptions,
-    });
+    const store = React.useMemo(
+      () =>
+        configureStore({
+          reducer,
+          ...reduxStoreOptions,
+        }),
+      [reducer, reduxStoreOptions]
+    );
     return (
       <ReduxProvider context={SpecificContext} store={store}>
         {children}
