@@ -1,6 +1,6 @@
 import * as React from "react";
 import { configureStore, createSlice as createReduxSlice, } from "@reduxjs/toolkit";
-import { Provider as ReduxProvider, useSelector, useDispatch, } from "react-redux";
+import { Provider as ReduxProvider, createSelectorHook, createDispatchHook, } from "react-redux";
 const __SET_INIT_PERSISTED_STATE_RN__ = "__SET_INIT_PERSISTED_STATE_RN__";
 const createReduxSliceWrapper = (name, reducers, initialState) => {
     const reduxSlice = {
@@ -112,6 +112,9 @@ const getHookAndProviderFromSlices = ({ slices = {}, AsyncStorage = null, reduxS
         providers: [],
         reduxSlices: [],
     });
+    const SpecificContext = React.createContext(null);
+    const useDispatch = createDispatchHook(SpecificContext);
+    const useSelector = createSelectorHook(SpecificContext);
     const useContextSlice = (name) => {
         const { [name]: value } = useValues(name);
         const { [name]: actions } = useActions();
@@ -143,7 +146,7 @@ const getHookAndProviderFromSlices = ({ slices = {}, AsyncStorage = null, reduxS
             reducer,
             ...reduxStoreOptions,
         });
-        return React.createElement(ReduxProvider, { store: store }, children);
+        return (React.createElement(ReduxProvider, { context: SpecificContext, store: store }, children));
     };
     const Provider = composeProviders([...providers, ReduxProviderWrapper]);
     return {

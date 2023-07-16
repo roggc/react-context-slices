@@ -5,8 +5,8 @@ import {
 } from "@reduxjs/toolkit";
 import {
   Provider as ReduxProvider,
-  useSelector,
-  useDispatch,
+  createSelectorHook,
+  createDispatchHook,
 } from "react-redux";
 
 const __SET_INIT_PERSISTED_STATE_RN__ = "__SET_INIT_PERSISTED_STATE_RN__";
@@ -223,6 +223,9 @@ const getHookAndProviderFromSlices = ({
         reduxSlices: [],
       }
     );
+  const SpecificContext = React.createContext(null);
+  const useDispatch = createDispatchHook(SpecificContext);
+  const useSelector = createSelectorHook(SpecificContext);
   const useContextSlice = (name) => {
     const { [name]: value } = useValues(name);
     const { [name]: actions } = useActions();
@@ -257,7 +260,11 @@ const getHookAndProviderFromSlices = ({
       reducer,
       ...reduxStoreOptions,
     });
-    return <ReduxProvider store={store}>{children}</ReduxProvider>;
+    return (
+      <ReduxProvider context={SpecificContext} store={store}>
+        {children}
+      </ReduxProvider>
+    );
   };
   const Provider = composeProviders([...providers, ReduxProviderWrapper]);
   return {
