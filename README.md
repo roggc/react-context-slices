@@ -24,6 +24,7 @@ If you want to read this documentation it's fine. But there is a dedicated websi
     [Define middleware (React Context slices)](#define-middleware-react-context-slices)  
     [Pass options to the Redux store](#pass-options-to-the-redux-store)  
 [How to use it (typescript)](#how-to-use-it-typescript)  
+[How to use it in micro-frontend solutions](#how-to-use-it-in-micro-frontend-solutions)  
 [Things you can do](#things-you-can-do)  
 [A note on why "initialArg" nomenclature (React Context slices)](#a-note-on-why-initialarg-nomenclature-react-context-slices)  
 [A note on testing](#a-note-on-testing)  
@@ -429,6 +430,16 @@ const App = () => {
 
 export default App;
 ```
+
+## How to use it in micro-frontend solutions
+
+`react-context-slices` is well-suited for micro-frontend solutions. It
+enables seamless sharing of state among micro-frontend projects and
+provides support for local shared state within each individual
+micro-frontend. With react-context-slices, both shared states can
+coexist harmoniously within each micro-frontend project. Check out
+**[this](https://medium.com/@roggc9/react-webpack-module-federation-with-shared-state-micro-frontend-app-891fe7effad4)**
+step-by-step article on how to implement it effectively.
 
 ## Things you can do
 
