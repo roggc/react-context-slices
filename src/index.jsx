@@ -1,8 +1,6 @@
 import * as React from "react";
-import {
-  configureStore,
-  createSlice as createReduxSlice,
-} from "@reduxjs/toolkit";
+import * as pkg from "@reduxjs/toolkit";
+const { configureStore, createSlice: createReduxSlice } = pkg;
 import {
   Provider as ReduxProvider,
   createSelectorHook,
