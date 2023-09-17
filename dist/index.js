@@ -1,6 +1,6 @@
 import * as React from "react";
-import * as pkg from "@reduxjs/toolkit";
-const { configureStore, createSlice: createReduxSlice } = pkg;
+import * as reduxToolkit from "@reduxjs/toolkit";
+const { configureStore, createSlice: createReduxSlice } = reduxToolkit?.default ?? reduxToolkit;
 import { Provider as ReduxProvider, createSelectorHook, createDispatchHook, } from "react-redux";
 const __SET_INIT_PERSISTED_STATE_RN__ = "__SET_INIT_PERSISTED_STATE_RN__";
 const createReduxSliceWrapper = (name, reducers, initialState) => {
