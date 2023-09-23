@@ -1,6 +1,7 @@
 import * as React from "react";
 import * as reduxToolkit from "@reduxjs/toolkit";
-const { configureStore, createSlice: createReduxSlice } = reduxToolkit;
+const { configureStore, createSlice: createReduxSlice } =
+  reduxToolkit?.default ?? reduxToolkit;
 import {
   Provider as ReduxProvider,
   createSelectorHook,
