@@ -1,6 +1,6 @@
 {
   "name": "react-context-slices",
-  "version": "9.2.1",
+  "version": "9.2.2",
   "description": "react-context-slices offers a unique solution to global state management in React by seamlessly integrating both Redux and React Context with zero-boilerplate",
   "main": "dist/index.js",
   "type": "module",
