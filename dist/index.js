@@ -31,7 +31,9 @@ const createSlice = (reducer, initialArg, init, name, getUseActions, isGetInitia
     };
     const useActions = getUseActions(useDispatchContext);
     let initialState_;
-    if (isGetInitialStateFromStorage && !AsyncStorage) {
+    if (isGetInitialStateFromStorage &&
+        !AsyncStorage &&
+        typeof localStorage !== "undefined") {
         let item;
         (item = localStorage.getItem(name)) !== null &&
             (initialState_ = JSON.parse(item));
