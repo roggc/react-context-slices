@@ -1,3 +1,4 @@
+"use client";
 import * as React from "react";
 // import * as reduxToolkit from "@reduxjs/toolkit";
 // const { configureStore, createSlice: createReduxSlice } =
