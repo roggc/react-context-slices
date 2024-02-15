@@ -39,6 +39,7 @@ If you want to read this documentation it's fine. But there is a dedicated websi
 
 ```javascript
 // slices.js
+"use client";
 import getHookAndProviderFromSlices from "react-context-slices";
 
 export const { useSlice, Provider } = getHookAndProviderFromSlices({
@@ -147,6 +148,7 @@ For React Context slices only, in case you want to get initial value of a slice 
 
 ```javascript
 // slices.js
+"use client";
 import getHookAndProviderFromSlices from "react-context-slices";
 
 export const { useSlice, Provider } = getHookAndProviderFromSlices({
@@ -240,6 +242,7 @@ For React Context slices only, you can also pass middleware (without access to t
 
 ```javascript
 // slices.js
+"use client";
 import getHookAndProviderFromSlices from "react-context-slices";
 
 export const { useSlice, Provider } = getHookAndProviderFromSlices({
@@ -317,6 +320,7 @@ export default Todos;
 You can also pass options to the Redux store (parameters of the `configureStore` function from Redux Toolkit, except `reducer`; check the documentation in Redux Toolkit):
 
 ```javascript
+"use client";
 import getHookAndProviderFromSlices from "react-context-slices";
 
 export const { useSlice, Provider } = getHookAndProviderFromSlices({
@@ -345,6 +349,7 @@ export const { useSlice, Provider } = getHookAndProviderFromSlices({
 
 ```typescript
 // slices.ts
+"use client";
 import getHookAndProviderFromSlices, {
   defineSlice,
 } from "react-context-slices";
@@ -445,6 +450,7 @@ step-by-step article on how to implement it effectively.
 
 ```javascript
 // slices.js
+"use client";
 import getHookAndProviderFromSlices from "react-context-slices";
 
 export const { useSlice, Provider } = getHookAndProviderFromSlices({
@@ -457,6 +463,7 @@ export const { useSlice, Provider } = getHookAndProviderFromSlices({
 
 ```javascript
 // slices.js
+"use client";
 import getHookAndProviderFromSlices from "react-context-slices";
 
 export const { useSlice, Provider } = getHookAndProviderFromSlices({
@@ -469,6 +476,7 @@ export const { useSlice, Provider } = getHookAndProviderFromSlices({
 
 ```javascript
 // slices.js
+"use client";
 import getHookAndProviderFromSlices from "react-context-slices";
 
 export const { useSlice, Provider } = getHookAndProviderFromSlices({
@@ -481,6 +489,7 @@ export const { useSlice, Provider } = getHookAndProviderFromSlices({
 
 ```javascript
 // slices.js
+"use client";
 import getHookAndProviderFromSlices from "react-context-slices";
 
 export const { useSlice, Provider } = getHookAndProviderFromSlices({
