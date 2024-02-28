@@ -1,8 +1,5 @@
 "use client";
 import * as React from "react";
-// import * as reduxToolkit from "@reduxjs/toolkit";
-// const { configureStore, createSlice: createReduxSlice } =
-//   reduxToolkit?.default ?? reduxToolkit;
 import {
   configureStore,
   createSlice as createReduxSlice,
@@ -172,7 +169,10 @@ const createTypicalSlice = (
         (value) => dispatch({ type: SET, payload: value }),
         [dispatch]
       );
-      return !!reducer ? { [name]: { dispatch } } : { [name]: { set } };
+      return React.useMemo(
+        () => (!!reducer ? { [name]: { dispatch } } : { [name]: { set } }),
+        [dispatch]
+      );
     },
     isGetInitialStateFromStorage,
     AsyncStorage,

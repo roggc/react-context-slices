@@ -1,8 +1,5 @@
 "use client";
 import * as React from "react";
-// import * as reduxToolkit from "@reduxjs/toolkit";
-// const { configureStore, createSlice: createReduxSlice } =
-//   reduxToolkit?.default ?? reduxToolkit;
 import { configureStore, createSlice as createReduxSlice, } from "@reduxjs/toolkit";
 import { Provider as ReduxProvider, createSelectorHook, createDispatchHook, } from "react-redux";
 const __SET_INIT_PERSISTED_STATE_RN__ = "__SET_INIT_PERSISTED_STATE_RN__";
@@ -95,7 +92,7 @@ const createTypicalSlice = (name, initialArg, reducer, init, isGetInitialStateFr
     const { useValues, useActions, Provider, reduxSlice } = createSlice(reducer_, initialArg, init, name, (useDispatch) => () => {
         const dispatch = useDispatch();
         const set = React.useCallback((value) => dispatch({ type: SET, payload: value }), [dispatch]);
-        return !!reducer ? { [name]: { dispatch } } : { [name]: { set } };
+        return React.useMemo(() => (!!reducer ? { [name]: { dispatch } } : { [name]: { set } }), [dispatch]);
     }, isGetInitialStateFromStorage, AsyncStorage, middleware);
     return { useValues, useActions, Provider, reduxSlice };
 };

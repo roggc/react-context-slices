@@ -1,3 +1,5 @@
+Before using react-context-slices maybe you want to consider using [jotai-wrapper](https://www.npmjs.com/package/jotai-wrapper), a super simple and tiny library around jotai that makes using jotai even simpler. The migration from react-context-slices to jotai-wrapper it's fairly simple. In react-context-slices you define a `slices.js` file, so in jotai-wrapper you define an `atoms.js` file. react-context-slices default exports `getHookAndProviderFromSlices` function, so jotai-wrapper default exports `getAPIFromAtoms` function. The reason for migration is a high usage of memory by react-context-slices when using React Context slices.
+
 # react-context-slices
 
 **`react-context-slices`** offers a unique solution to global state management in React by seamlessly integrating both **Redux** and **React Context** with **zero-boilerplate**.
